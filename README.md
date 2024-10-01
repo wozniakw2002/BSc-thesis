@@ -28,3 +28,10 @@
 | 07.01 | Writting thesis |
 | 15.01 | Final changes |
  
+### Main modules
+- Data loader
+- Data preprocessor
+- Model
+- GUI
+- Statistics and charts
+- Selecting crucial areas
