@@ -30,7 +30,7 @@
  
 ### Main modules
 - Data loader
-- Data preprocessor
+- Feature extraction
 - Model
 - GUI
 - Statistics and charts
