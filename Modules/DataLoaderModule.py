@@ -6,3 +6,5 @@ class DataLoader:
     def load_data(self, path: str):
         pass
 
+
+print('test')
