@@ -74,6 +74,3 @@ class DataLoader:
 
 loader = DataLoader()
 X,Y = loader.load_data_from_folder_as_png('data')
-print(len(X))
-print(X)
-help(DataLoader)
