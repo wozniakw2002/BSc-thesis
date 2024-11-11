@@ -92,11 +92,11 @@ class DataLoader:
         """
 
         photo = cv2.imread(path, 0)
-        return photo
+        return [photo]
     
-    def save_data_as_array(self, path: str, X: np.array, Y: np.array):
+    def save_data_as_array(self, path: str, X: np.array, Y: np.array) -> None:
         """
-        This method saves data nad labels to the file as a np.array.
+        This void method saves data nad labels to the file as a np.array.
 
         Parametrs:
         ----------
