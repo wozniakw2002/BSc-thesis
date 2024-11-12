@@ -3,20 +3,78 @@ from sklearn.model_selection import train_test_split
 import cv2
 
 class Preprocessor:
+    """
+    This static class provides methodes useful during preprocessing.
+    
+    Methods:
+    --------
+    normalize_data(data)
+        Normalizes data to the interval [0,1].
+    
+    split_data(X,Y)
+        Splits data into training, validation and test datasets.
+
+    split_wide_photos(X,Y)
+        Splits photos with two knees into 2 photos with one knee on each.
+    
+    resize_photos(X)
+        Resizes every photo to size (224, 224) pixels.
+    
+    flip_photos(X,Y)
+        Makes a copy of every photo by flipping it by y-axis.
+    """
 
     @staticmethod
-    def normalize_data(data):
+    def normalize_data(data: np.array) -> np.array:
+        """
+        This static method normalizes data to the interval [0,1].
+
+        Parametrs:
+        ----------
+        data: np.array -> Array of photos.
+        
+        Returns:
+        --------
+        normalized: np.array -> Array of dormalized data.
+        """
+
         normalized = data/255
         return normalized
     
     @staticmethod
-    def split_data(X,Y):
+    def split_data(X: np.array, Y: np.array) -> tuple:
+        """
+        This static method splits data into training, test and validation sets.
+
+        Parametrs:
+        ----------
+        X: np.array -> Array of photos.
+        Y: np.array -> array of labels.
+
+        Returns:
+        --------
+        tuple -> Arrays of splitaed data.
+        """
+
         X_train, X_valid, Y_train, Y_valid = train_test_split(X,Y,test_size=0.15, random_state=2024)
         X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, test_size=0.2, random_state=2024)
         return X_train, X_test, X_valid, Y_train, Y_test, Y_valid
 
     @staticmethod
-    def split_wide_photos(X,Y):
+    def split_wide_photos(X: np.array, Y: np.array) -> tuple:
+        """
+        This static method splits photos with two knees into 2 photos with one knee on each.
+
+        Parametrs:
+        ----------
+        X: np.array -> array of photos.
+        Y: np.array -> array of labels.
+
+        Returns:
+        --------
+        tuple -> Arrays of splitaed data.
+        """
+
         indexes = [i for i, v in enumerate(X) if np.shape(v) == (161,640)]
         X_wide = X[indexes]
         Y_wide = Y[indexes]
@@ -32,14 +90,39 @@ class Preprocessor:
         return X_final, Y_final
     
     @staticmethod
-    def resize_photos(X):
+    def resize_photos(X: np.array) -> np.array:
+        """
+        This static method resizes photos to the size of (224,224) pixels.
+        It uses cubic interpolation.
+
+        Parametrs:
+        ----------
+        X: np.array -> array of photos.
+
+        Returns:
+        --------
+        np.array -> array of resized photos.
+        """
+
         X_res = np.empty(len(X), dtype=object)
         for i in range(len(X)):
             X_res[i] = cv2.resize(X[i], (224,224), interpolation=cv2.INTER_CUBIC)
         return X_res
 
     @staticmethod
-    def flip_photos(X,Y):
+    def flip_photos(X: np.array, Y: np.array) -> tuple:
+        """
+        This static method makes a copy of every photo by flipping it by y-axis.
+
+        Parametrs:
+        ----------
+        X: np.array -> array of photos.
+        Y: np.array -> array of labels.
+        Returns:
+        --------
+        tuple-> array of concatenated original and copied photos, array of labels.
+        """
+
         X_flipped = np.repeat(X,2)
         Y_flipped = np.repeat(Y, 2)
         for i in range(len(X)):
