@@ -1,4 +1,4 @@
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, auc, roc_curve
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, auc, roc_curve, classification_report
 import numpy as np
 import matplotlib.pyplot as plt
 class Statistics:
@@ -22,6 +22,10 @@ class Statistics:
     # def auc(Y: np.array, Y_pred: np.array) -> float:
     #     auc_value = auc(Y, Y_pred) # TP/(TP + FN)
     #     return auc_value
+
+    def report(Y, Y_pred):
+        report = classification_report(Y, Y_pred)
+        return report
 
     def roc_curve(Y, Y_pred):
         fpr, tpr, _ = roc_curve(Y, Y_pred) 
