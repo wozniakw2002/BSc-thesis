@@ -132,9 +132,6 @@ class Preprocessor:
             X_flipped[2*i] = cv2.flip(X_flipped[2*i], 1)
         
         return X_flipped, Y_flipped
-<<<<<<< Updated upstream
-    
-=======
     
     @staticmethod
     def prepoccesing(X: np.array, Y: np.array) -> tuple:
@@ -151,11 +148,12 @@ class Preprocessor:
         --------
         tuple -> Arrays of preprocessed data.
         """
-        
+
         X_splited, Y_splited = Preprocessor.split_wide_photos(X,Y)
         X_resized = Preprocessor.resize_photos(X_splited)
         X_normalized = Preprocessor.normalize_data(X_resized)
         return X_normalized, Y_splited
+
 
     @staticmethod
     def augmentation(X: np.array, Y:np.array) -> tuple:
@@ -170,4 +168,3 @@ class Preprocessor:
                 X_flipped[8*i +j] = cv2.flip(rotated, j-6)
         
         return X_flipped, Y_flipped
->>>>>>> Stashed changes
