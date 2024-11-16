@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 import cv2
+from scipy.ndimage import rotate
 
 class Preprocessor:
     """
@@ -42,7 +43,7 @@ class Preprocessor:
         return normalized
     
     @staticmethod
-    def split_data(X: np.array, Y: np.array) -> tuple:
+    def split_data(X: np.array, Y: np.array, val_size = 0.15, test_size = 0.2) -> tuple:
         """
         This static method splits data into training, test and validation sets.
 
@@ -50,14 +51,16 @@ class Preprocessor:
         ----------
         X: np.array -> Array of photos.
         Y: np.array -> array of labels.
+        val_size: float -> the ratio of the validation set to the entire data.
+        test_size: float -> the ratio of the test set to the entire data.
 
         Returns:
         --------
         tuple -> Arrays of splitaed data.
         """
 
-        X_train, X_valid, Y_train, Y_valid = train_test_split(X,Y,test_size=0.15, random_state=2024)
-        X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, test_size=0.2, random_state=2024)
+        X_train, X_valid, Y_train, Y_valid = train_test_split(X,Y,test_size=val_size, random_state=2024)
+        X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, test_size=test_size/(1-val_size), random_state=2024)
         return X_train, X_test, X_valid, Y_train, Y_test, Y_valid
 
     @staticmethod
@@ -129,4 +132,42 @@ class Preprocessor:
             X_flipped[2*i] = cv2.flip(X_flipped[2*i], 1)
         
         return X_flipped, Y_flipped
+<<<<<<< Updated upstream
     
+=======
+    
+    @staticmethod
+    def prepoccesing(X: np.array, Y: np.array) -> tuple:
+        """
+        This static method performs preprocessing on the input data X and Y by 
+        splitting, resizing, and normalizing the images.
+
+        Parametrs:
+        ----------
+        X: np.array -> array of photos.
+        Y: np.array -> array of labels.
+
+        Returns:
+        --------
+        tuple -> Arrays of preprocessed data.
+        """
+        
+        X_splited, Y_splited = Preprocessor.split_wide_photos(X,Y)
+        X_resized = Preprocessor.resize_photos(X_splited)
+        X_normalized = Preprocessor.normalize_data(X_resized)
+        return X_normalized, Y_splited
+
+    @staticmethod
+    def augmentation(X: np.array, Y:np.array) -> tuple:
+        X_flipped = np.repeat(X,8)
+        Y_flipped = np.repeat(Y, 8)
+        for i in range(len(X)):
+            for j in range(1,4):
+                X_flipped[8*i +j] = cv2.flip(X[i], j-2)
+            rotated = rotate(X[i], 90)
+            X_flipped[8*i + 4] = rotated
+            for j in range(5,8):
+                X_flipped[8*i +j] = cv2.flip(rotated, j-6)
+        
+        return X_flipped, Y_flipped
+>>>>>>> Stashed changes
