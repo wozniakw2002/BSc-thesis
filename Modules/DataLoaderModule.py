@@ -110,7 +110,7 @@ class DataLoader:
             pickle.dump([X,Y], outfile, pickle.HIGHEST_PROTOCOL)
         print('File saved')
 
-    def load_data_as_array(self, path) -> np.array:
+    def load_data_as_array(self, path: str) -> np.array:
         """
         This method reads data and its labels, saved as an array.
 
@@ -129,6 +129,23 @@ class DataLoader:
         X = data[0]
         Y = data[1]
         return X,Y
+    
+    def load_pickle_file(path: str):
+        """
+        This method loads pickle file.
+
+        Parametrs:
+        ----------
+        path: str -> path to file in which pickle file is saved
+
+        Returns:
+        --------
+        
+        """
+
+        with open(path, 'rb') as pickle_file:
+            loaded_file= pickle.load(pickle_file)
+        return loaded_file
     
 
 
