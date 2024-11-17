@@ -94,7 +94,7 @@ class DataLoader:
         photo = cv2.imread(path, 0)
         return [photo]
     
-    def save_data_as_array(self, path: str, X: np.array, Y: np.array) -> None:
+    def save_data_as_array(path: str, X: np.array, Y: np.array) -> None:
         """
         This void method saves data nad labels to the file as a np.array.
 
@@ -110,7 +110,7 @@ class DataLoader:
             pickle.dump([X,Y], outfile, pickle.HIGHEST_PROTOCOL)
         print('File saved')
 
-    def load_data_as_array(self, path: str) -> np.array:
+    def load_data_as_array(path: str) -> np.array:
         """
         This method reads data and its labels, saved as an array.
 
