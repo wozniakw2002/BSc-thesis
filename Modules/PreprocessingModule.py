@@ -134,7 +134,7 @@ class Preprocessor:
         return X_flipped, Y_flipped
     
     @staticmethod
-    def prepoccesing(X: np.array, Y: np.array) -> tuple:
+    def preprocessing(X: np.array, Y: np.array) -> tuple:
         """
         This static method performs preprocessing on the input data X and Y by 
         splitting, resizing, and normalizing the images.
