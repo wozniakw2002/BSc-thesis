@@ -157,6 +157,19 @@ class Preprocessor:
 
     @staticmethod
     def augmentation(X: np.array, Y:np.array) -> tuple:
+        """
+        This static method rotates and flips photos in every direction.
+
+        Parametrs:
+        ----------
+        X: np.array -> array of photos.
+        Y: np.array -> array of labels.
+
+        Returns:
+        --------
+        tuple -> Arrays of new data.
+        """
+
         X_flipped = np.repeat(X,8)
         Y_flipped = np.repeat(Y, 8)
         for i in range(len(X)):
