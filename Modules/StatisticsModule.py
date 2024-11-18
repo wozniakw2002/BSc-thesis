@@ -2,6 +2,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
+from fpdf import FPDF
 class Statistics:
     
     @staticmethod
@@ -98,7 +99,7 @@ class Statistics:
 
         
     @staticmethod
-    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array) -> None:
+    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save=False) -> None:
         """
         This method plots ROC curve of model.
 
@@ -108,6 +109,7 @@ class Statistics:
         Y_pred_prob: np.array -> array of predicted probabilities.
         """
 
+        plt.figure(figsize=(5,5))
         fpr, tpr,_ = roc_curve(Y,Y_pred_prob)
         auc_val = round(auc(fpr, tpr), 2)
         plt.plot(fpr, tpr, label = f'Out Model (AUC = {auc_val})')
@@ -118,11 +120,13 @@ class Statistics:
         plt.ylabel('True Positive Rate')
         plt.legend()
         plt.title('ROC curve')
-        plt.show()
-
+        if save:
+            plt.savefig('plots/roc.png')
+        else:
+            plt.show()
 
     @staticmethod
-    def plot_learning_curve(train_loss: np.array, val_loss: np.array) -> None:
+    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save=False) -> None:
         """
         This method plots learning curve for training and validation set.
 
@@ -132,16 +136,20 @@ class Statistics:
         val_loss: np.array -> array of validation set loss values in consecutive epochs.
         """
 
+        plt.figure(figsize=(5,5))
         plt.plot(train_loss, label='train_loss')
         plt.plot(val_loss,label='val_loss')
         plt.title('Learning curve')
         plt.xlabel('Epochs')
         plt.ylabel('Loss')
         plt.legend()
-        plt.show()
+        if save:
+            plt.savefig('plots/learn.png')
+        else:
+            plt.show()
     
     @staticmethod
-    def plot_confusion_matrix(Y: np.array, Y_pred: np.array) -> None:
+    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save = False) -> None:
         """
         This method plots confusion matrix.
 
@@ -151,13 +159,17 @@ class Statistics:
         Y_pred: np.array -> array of predicted labels.
         """
 
+        plt.figure(figsize=(5,5))
         matrix = confusion_matrix(Y, Y_pred)
         plot_matrix = ConfusionMatrixDisplay(confusion_matrix = matrix, display_labels = ['Healthy', 'Osteoarthritis'])
         plot_matrix.plot()
-        plt.show()
+        if save:
+            plt.savefig('plots/conf.png')
+        else:
+            plt.show()
     
     @staticmethod
-    def plot_probability_histogram(Y_pred_prob: np.array) -> None:
+    def plot_probability_histogram(Y_pred_prob: np.array, save = False) -> None:
         """
         This method plots histogram of probabilities.
 
@@ -166,6 +178,7 @@ class Statistics:
         Y_pred_prob: np.array -> array of predicted probabilities.
         """
 
+        plt.figure(figsize=(5,5))
         plt.hist(Y_pred_prob, 
                  bins=[i/10 for i in range(11)], 
                  weights=np.ones(len(Y_pred_prob)) / len(Y_pred_prob))
@@ -175,9 +188,28 @@ class Statistics:
         plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
         plt.xticks([i/10 for i in range(11)])
         plt.xticks()
-        plt.show()
+        if save:
+            plt.savefig('plots/hist.png')
+        else:
+            plt.show()
+        
 
-        @staticmethod
-        def report(Y, Y_pred):
-            #to do
-            pass
+    @staticmethod
+    def report(Y, Y_pred):
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font('Helvetica', 'b', 20)  
+        pdf.cell(80)
+        pdf.cell(20, 10, 'Model report', align='C')
+        pdf.ln(30)
+
+        pdf.set_font('Helvetica', '', 11)
+        pdf.write(5, 'Vizualizations')
+
+        pdf.ln(15)
+        pdf.image('plots/hist.png', 10,45, 100)
+        pdf.image('plots/roc.png', 110,45, 100)
+        pdf.image('plots/conf.png', 10,145, 100)
+        pdf.image('plots/learn.png', 110,145, 100)
+        pdf.output("report.pdf", 'F')
+            
