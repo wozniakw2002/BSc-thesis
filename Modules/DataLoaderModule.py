@@ -78,7 +78,7 @@ class DataLoader:
         self.__index = 0
         return X,Y
 
-    def load_single_photo(self, path: str) -> np.array:
+    def load_single_photo(path: str) -> np.array:
         """
         This method takes relative path to photo and loads it.
 

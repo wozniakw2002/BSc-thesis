@@ -114,12 +114,10 @@ class DataPreparation:
         np.ndarray -> Preprocessed photo ready for prediction.
         """
         
-        pass
-        # loader = DataLoader()
-        # x = loader.load_single_photo(path)
-        # x = Preprocessor.preprocessing(x)
-        # x = DataPreparation.data_formatting(x)
-        # return x
+        x = DataLoader.load_single_photo(path)
+        x, _= Preprocessor.preprocessing(np.array(x))
+        x = np.expand_dims(np.array(x.tolist(), dtype=np.float32), axis=-1)
+        return x
 
 
 class Model:
