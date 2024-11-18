@@ -4,19 +4,75 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
 class Statistics:
     
+    @staticmethod
     def accuracy(Y: np.array, Y_pred: np.array) -> float:
+        """
+        This method counts accuracy value.
+
+        Parameters:
+        -----------
+        Y: np.array -> array of true labels.
+        Y_pred: np.array -> array of predicted labels.
+
+        Returns:
+        --------
+        float -> metrice's value
+        """
+
         acc = accuracy_score(Y,Y_pred) # (TP + TN)/(TP + TN + FP + FN)
         return acc
     
+    @staticmethod
     def f1_score(Y: np.array, Y_pred: np.array) -> float:
+        """
+        This method counts f1-score.
+
+        Parameters:
+        -----------
+        Y: np.array -> array of true labels.
+        Y_pred: np.array -> array of predicted labels.
+
+        Returns:
+        --------
+        float -> metrice's value
+        """
+
         f1 = f1_score(Y, Y_pred) # 2TP/(2TP + FN + FP)
         return float(f1)
     
+    @staticmethod
     def preccision(Y: np.array, Y_pred: np.array) -> float:
+        """
+        This method counts preccision value.
+
+        Parameters:
+        -----------
+        Y: np.array -> array of true labels.
+        Y_pred: np.array -> array of predicted labels.
+
+        Returns:
+        --------
+        float -> metrice's value
+        """
+
         pre = precision_score(Y, Y_pred) # TP/(TP + FP)
         return float(pre)
     
+    @staticmethod
     def recall(Y: np.array, Y_pred: np.array) -> float:
+        """
+        This method counts recall value.
+
+        Parameters:
+        -----------
+        Y: np.array -> array of true labels.
+        Y_pred: np.array -> array of predicted labels.
+
+        Returns:
+        --------
+        float -> metrice's value
+        """
+
         rec = recall_score(Y, Y_pred) # TP/(TP + FN)
         return float(rec)
 
@@ -29,15 +85,16 @@ class Statistics:
         -----------
         Y: np.array -> array of true labels.
         Y_pred_prob: np.array -> array of predicted probabilities.
+
+        Returns:
+        --------
+        float -> metrice's value
         """
+
         fpr, tpr,_ = roc_curve(Y,Y_pred_prob)
         auc_val = auc(fpr, tpr) # TP/(TP + FN)
         
         return float(auc_val)
-
-    def report(Y, Y_pred):
-        report = classification_report(Y, Y_pred)
-        print(report)
 
         
     @staticmethod
@@ -108,6 +165,7 @@ class Statistics:
         -----------
         Y_pred_prob: np.array -> array of predicted probabilities.
         """
+
         plt.hist(Y_pred_prob, 
                  bins=[i/10 for i in range(11)], 
                  weights=np.ones(len(Y_pred_prob)) / len(Y_pred_prob))
@@ -118,3 +176,8 @@ class Statistics:
         plt.xticks([i/10 for i in range(11)])
         plt.xticks()
         plt.show()
+
+        @staticmethod
+        def report(Y, Y_pred):
+            #to do
+            pass

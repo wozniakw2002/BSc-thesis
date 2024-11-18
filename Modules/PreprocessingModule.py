@@ -64,7 +64,7 @@ class Preprocessor:
         return X_train, X_test, X_valid, Y_train, Y_test, Y_valid
 
     @staticmethod
-    def split_wide_photos(X: np.array, Y: np.array) -> tuple:
+    def split_wide_photos(X: np.array, Y = None) -> tuple:
         """
         This static method splits photos with two knees into 2 photos with one knee on each.
 
@@ -80,17 +80,21 @@ class Preprocessor:
 
         indexes = [i for i, v in enumerate(X) if np.shape(v) == (161,640)]
         X_wide = X[indexes]
-        Y_wide = Y[indexes]
         X_split = np.empty(2 * len(indexes), dtype=object)
-        Y_split = np.repeat(Y_wide, 2)
+        
         for i in range(len(indexes)):
             X_split[2 * i] = X_wide[i][:, :320]
             X_split[2 * i + 1] = X_wide[i][:, 320:]
         
-        excluded = [i for i in range(len(X)) if i not in indexes]
-        X_final = np.append(X[excluded], X_split)
-        Y_final = np.append(Y[excluded], Y_split)
-        return X_final, Y_final
+        if Y is not None:
+            Y_wide = Y[indexes]
+            Y_split = np.repeat(Y_wide, 2)
+            excluded = [i for i in range(len(X)) if i not in indexes]
+            X_final = np.append(X[excluded], X_split)
+            Y_final = np.append(Y[excluded], Y_split)
+            return X_final, Y_final
+        
+        return X_final
     
     @staticmethod
     def resize_photos(X: np.array) -> np.array:
