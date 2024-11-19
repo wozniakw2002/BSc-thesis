@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
 from fpdf import FPDF
+import seaborn as sns
 class Statistics:
     
     @staticmethod
@@ -21,7 +22,7 @@ class Statistics:
         """
 
         acc = accuracy_score(Y,Y_pred) # (TP + TN)/(TP + TN + FP + FN)
-        return acc
+        return "%.2f"%round(acc,2)
     
     @staticmethod
     def f1_score(Y: np.array, Y_pred: np.array) -> float:
@@ -39,7 +40,7 @@ class Statistics:
         """
 
         f1 = f1_score(Y, Y_pred) # 2TP/(2TP + FN + FP)
-        return float(f1)
+        return "%.2f"%round(float(f1),2)
     
     @staticmethod
     def preccision(Y: np.array, Y_pred: np.array) -> float:
@@ -57,7 +58,7 @@ class Statistics:
         """
 
         pre = precision_score(Y, Y_pred) # TP/(TP + FP)
-        return float(pre)
+        return "%.2f"%round(float(pre),2)
     
     @staticmethod
     def recall(Y: np.array, Y_pred: np.array) -> float:
@@ -75,7 +76,7 @@ class Statistics:
         """
 
         rec = recall_score(Y, Y_pred) # TP/(TP + FN)
-        return float(rec)
+        return "%.2f"%round(float(rec),2)
 
     @staticmethod
     def auc(Y: np.array, Y_pred_prob: np.array) -> float:
@@ -95,7 +96,7 @@ class Statistics:
         fpr, tpr,_ = roc_curve(Y,Y_pred_prob)
         auc_val = auc(fpr, tpr) # TP/(TP + FN)
         
-        return float(auc_val)
+        return "%.2f"%round(float(auc_val),2)
 
         
     @staticmethod
@@ -122,6 +123,7 @@ class Statistics:
         plt.title('ROC curve')
         if save:
             plt.savefig('plots/roc.png')
+            return None
         else:
             plt.show()
 
@@ -145,6 +147,7 @@ class Statistics:
         plt.legend()
         if save:
             plt.savefig('plots/learn.png')
+            return None
         else:
             plt.show()
     
@@ -159,15 +162,17 @@ class Statistics:
         Y_pred: np.array -> array of predicted labels.
         """
 
-        plt.figure(figsize=(5,5))
-        matrix = confusion_matrix(Y, Y_pred)
-        plot_matrix = ConfusionMatrixDisplay(confusion_matrix = matrix, display_labels = ['Healthy', 'Osteoarthritis'])
-        plot_matrix.plot()
+        conf_matrix = confusion_matrix(Y, Y_pred,normalize='all')
+        fig, ax = plt.subplots(figsize=(5,5))
+        sns.heatmap(conf_matrix,cmap="YlOrBr", annot=True, fmt='.2f', xticklabels=['Normall', 'Osteoarthritis'], yticklabels=['Normall', 'Osteoarthritis'])
+        plt.ylabel('Actual')
+        plt.xlabel('Predicted')
         if save:
             plt.savefig('plots/conf.png')
+            return None
         else:
             plt.show()
-    
+
     @staticmethod
     def plot_probability_histogram(Y_pred_prob: np.array, save = False) -> None:
         """
@@ -190,12 +195,29 @@ class Statistics:
         plt.xticks()
         if save:
             plt.savefig('plots/hist.png')
+            return None
         else:
             plt.show()
         
 
     @staticmethod
-    def report(Y, Y_pred):
+    def report(Y, Y_pred, Y_pred_prob, train_loss, val_loss):
+        Statistics.plot_confusion_matrix(Y, Y_pred, True)
+        Statistics.plot_learning_curve(train_loss, val_loss, True)
+        Statistics.plot_probability_histogram(Y_pred_prob, True)
+        Statistics.plot_roc_curve(Y, Y_pred_prob, True)
+
+        metrics = [Statistics.accuracy(Y, Y_pred), 
+             Statistics.f1_score(Y,Y_pred),
+             Statistics.preccision(Y,Y_pred),
+             Statistics.recall(Y,Y_pred),
+             Statistics.auc(Y,Y_pred_prob)]
+        
+        table = (
+            ['Accuracy', 'F-score', 'Precision', 'Recall', 'AUC'],
+            [str(el) for el in metrics]
+        )
+
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font('Helvetica', 'b', 20)  
@@ -203,13 +225,24 @@ class Statistics:
         pdf.cell(20, 10, 'Model report', align='C')
         pdf.ln(30)
 
-        pdf.set_font('Helvetica', '', 11)
+        pdf.set_font('Helvetica', 'b', 11)
         pdf.write(5, 'Vizualizations')
 
-        pdf.ln(15)
         pdf.image('plots/hist.png', 10,45, 100)
         pdf.image('plots/roc.png', 110,45, 100)
         pdf.image('plots/conf.png', 10,145, 100)
         pdf.image('plots/learn.png', 110,145, 100)
+        
+
+        pdf.ln(210)
+        pdf.write(0, 'Statistics')
+        pdf.ln(10)
+        line_height = pdf.font_size * 2
+        col_width = pdf.epw/5
+        for row in table:
+            for data in row:
+                pdf.multi_cell(col_width, line_height, data, border=1, ln=3, max_line_height=3)
+            pdf.ln(line_height)
+        
         pdf.output("report.pdf", 'F')
             
