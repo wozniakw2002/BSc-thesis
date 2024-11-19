@@ -1,5 +1,6 @@
 from Modules.DataLoaderModule import DataLoader
 from Modules.PreprocessingModule import Preprocessor
+from Modules.StatisticsModule import Statistics
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.models import Sequential
@@ -352,7 +353,9 @@ class Model:
         load_saved_data: bool = False,
         train_path: str = "",
         val_path: str = "",
-        test_path: str = ""
+        test_path: str = "",
+        execution_count: int = 1,
+        threshold: float = 0.5
     ) -> tuple:
         """
         Combines the full training pipeline.
@@ -377,9 +380,36 @@ class Model:
             load_saved_data, train_path, val_path, test_path
         )
 
-        history = Model.train_model(model, X_train, Y_train, X_val, Y_val, epochs, batch_size)
-        predictions = Model.predict_training(model, X_train, X_val, X_test, threshold=0.5)
+        loss_mean = np.zeros(execution_count)
+        val_loss_mean = np.zeros(execution_count)
+        Y_test_prob = np.zeros(len(Y_test))
+        
+        for i in range(execution_count):
+            model_test = tf.keras.models.clone_model(model)
+            model_test.set_weights(model.get_weights())
+            model_test.compile(optimizer='adam', loss='binary_crossentropy',
+                               metrics=['accuracy', 'AUC', 'Precision', 'Recall'])
+            
 
-        Model.save_history(history, f'history_{name}')
-        Model.save_predictions(predictions, f'predictions_{name}', Y_train, Y_val, Y_test)
-        return history, predictions
+            if i != execution_count-1:
+                history = Model.train_model(model_test, X_train, Y_train, X_val, Y_val, epochs, batch_size)
+                predictions = Model.predict_training(model_test, X_train, X_val, X_test, threshold)
+            else:
+                history = Model.train_model(model, X_train, Y_train, X_val, Y_val, epochs, batch_size)
+                predictions = Model.predict_training(model, X_train, X_val, X_test, threshold)
+
+           
+            loss_mean += np.array(history.history['loss'])
+            val_loss_mean += np.array(history.history['val_loss'])
+            Y_test_prob += predictions['prediction_test'].flatten()
+
+        loss_mean = loss_mean/execution_count
+        val_loss_mean = val_loss_mean/execution_count
+        Y_test_pred_prob = Y_test_prob/execution_count
+        Y_test_pred = (Y_test_pred_prob > threshold).astype("int32")
+
+        Statistics.report(Y_test,Y_test_pred,Y_test_pred_prob,loss_mean,val_loss_mean)
+
+        # Model.save_history(history, f'history_{name}')
+        # Model.save_predictions(predictions, f'predictions_{name}', Y_train, Y_val, Y_test)
+        # return history, predictions
