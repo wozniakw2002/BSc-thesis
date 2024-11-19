@@ -64,7 +64,7 @@ class Preprocessor:
         return X_train, X_test, X_valid, Y_train, Y_test, Y_valid
 
     @staticmethod
-    def split_wide_photos(X: np.array, Y = None) -> tuple:
+    def split_wide_photos(X: np.array, Y : np.array = None) -> tuple:
         """
         This static method splits photos with two knees into 2 photos with one knee on each.
 
@@ -79,9 +79,12 @@ class Preprocessor:
         """
 
         indexes = [i for i, v in enumerate(X) if np.shape(v) == (161,640)]
+
+        if indexes == []:
+            return X, Y
+
         X_wide = X[indexes]
         X_split = np.empty(2 * len(indexes), dtype=object)
-        
         for i in range(len(indexes)):
             X_split[2 * i] = X_wide[i][:, :320]
             X_split[2 * i + 1] = X_wide[i][:, 320:]
@@ -94,7 +97,7 @@ class Preprocessor:
             Y_final = np.append(Y[excluded], Y_split)
             return X_final, Y_final
         
-        return X_final
+        return X_split, None
     
     @staticmethod
     def resize_photos(X: np.array) -> np.array:
@@ -138,7 +141,7 @@ class Preprocessor:
         return X_flipped, Y_flipped
     
     @staticmethod
-    def prepoccesing(X: np.array, Y: np.array) -> tuple:
+    def preprocessing(X: np.array, Y: np.array = None) -> tuple:
         """
         This static method performs preprocessing on the input data X and Y by 
         splitting, resizing, and normalizing the images.
