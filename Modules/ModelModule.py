@@ -102,7 +102,7 @@ class DataPreparation:
         return X_train, X_test, X_val, Y_train, Y_test, Y_val
     
     @staticmethod
-    def single_photo_preparation(path: str) -> np.ndarray:
+    def single_photo_preparation(path: str = None, image = None) -> np.ndarray:
         """
         Prepare a single photo for prediction.
 
@@ -114,8 +114,11 @@ class DataPreparation:
         -------
         np.ndarray -> Preprocessed photo ready for prediction.
         """
-        
-        x = DataLoader.load_single_photo(path)
+        if image is None:
+            x = DataLoader.load_single_photo(path)
+        else:
+            image = image.convert('L')
+            x = [np.array(image)]
         x, _= Preprocessor.preprocessing(np.array(x))
         x = np.expand_dims(np.array(x.tolist(), dtype=np.float32), axis=-1)
         return x

@@ -8,4 +8,11 @@
         <h5><a href="/modelInfo">More Info about Model</a></h5>
     </div>
 </div>
+
+<h3>Prześlij obraz do analizy</h3>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Prześlij</button>
+</form>
 {% endblock %}
