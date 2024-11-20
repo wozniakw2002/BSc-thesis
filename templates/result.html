@@ -1,4 +1,13 @@
-<h1>Wynik predykcji</h1>
-<p>Czy osoba jest chora: <strong>{{ label }}</strong></p>
-<p>Prawdopodobieństwo choroby: <strong>{{ prediction }}</strong></p>
-<a href="{% url 'main' %}">Prześlij inny obraz</a>
+<h1>Prediction Results</h1>
+<img src="data:image/png;base64,{{ image }}" alt="Processed Image">
+
+<p><strong>Prediction:</strong> {{ prediction }}</p>
+<p><strong>Label:</strong> {{ label }}</p>
+
+<!-- Przycisk do pobrania raportu -->
+<form method="get" action="{% url 'generate_pdf' %}">
+    <input type="hidden" name="prediction" value="{{ prediction }}">
+    <input type="hidden" name="label" value="{{ label }}">
+    <input type="hidden" name="image_data" value="{{ image }}">
+    <button type="submit">Download Report</button>
+</form>
