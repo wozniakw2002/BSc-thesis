@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <style>
+ 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+   
+        .title {
+            text-align: center;
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+ 
+        .image-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+
+        .result-text {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+ 
+        .sick-text {
+            color: #e74c3c;
+        }
+
+  
+        .healthy-text {
+            color: #2ecc71;
+        }
+
+        .image-description {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .result-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+  
+        .second-image-container {
+            margin-top: 30px;
+        }
+
+   
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #2980b9;
+        }
+
+   
+    </style>
+</head>
+<body>
+
+<h1 class="title">Prediction Results</h1>
+
+
+<div class="image-container">
+    {% if label_1 == 1 %}
+        {% if image_2 %}
+        <h2 class="result-text sick-text">Left image leg is sick - Probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+        {% else %}
+        <h2 class="result-text sick-text">Leg is sick - probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+        {% endif %}
+    {% else %}
+        <h2 class="result-text healthy-text">The leg is healthy - probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+    {% endif %}
+    <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>
+    <img class="result-image" src="data:image/png;base64,{{ image_1 }}" alt="Processed Image 1">
+</div>
+
+
+{% if image_2 %}
+    <div class="image-container second-image-container">
+        {% if label_2 == 1 %}
+        <h2 class="result-text sick-text">Right image leg is sick - probability of disease: {{ prediction_2|floatformat:2 }}</h2>
+        {% else %}
+        <h2 class="result-text healthy-text">The leg is healthy - probability of disease: {{ prediction_2|floatformat:2 }}</h2>
+        {% endif %}
+        <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>
+        <img class="result-image" src="data:image/png;base64,{{ image_2 }}" alt="Processed Image 2">
+    </div>
+{% endif %}
+
+
+<form method="get" action="{% url 'generate_pdf' %}">
+    <input type="hidden" name="prediction_1" value="{{ prediction_1 }}">
+    <input type="hidden" name="label_1" value="{{ label_1 }}">
+    <input type="hidden" name="image_1" value="{{ image_1 }}">
+    {% if image_2 %}
+        <input type="hidden" name="prediction_2" value="{{ prediction_2 }}">
+        <input type="hidden" name="label_2" value="{{ label_2 }}">
+        <input type="hidden" name="image_2" value="{{ image_2 }}">
+    {% endif %}
+    <button type="submit" class="download-btn">Download Report</button>
+</form>
+
+</body>
+</html>

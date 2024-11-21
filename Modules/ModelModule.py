@@ -102,7 +102,7 @@ class DataPreparation:
         return X_train, X_test, X_val, Y_train, Y_test, Y_val
     
     @staticmethod
-    def single_photo_preparation(path: str) -> np.ndarray:
+    def single_photo_preparation(path: str = None, image = None) -> np.ndarray:
         """
         Prepare a single photo for prediction.
 
@@ -114,8 +114,11 @@ class DataPreparation:
         -------
         np.ndarray -> Preprocessed photo ready for prediction.
         """
-        
-        x = DataLoader.load_single_photo(path)
+        if image is None:
+            x = DataLoader.load_single_photo(path)
+        else:
+            image = image.convert('L')
+            x = [np.array(image)]
         x, _= Preprocessor.preprocessing(np.array(x))
         x = np.expand_dims(np.array(x.tolist(), dtype=np.float32), axis=-1)
         return x
@@ -380,8 +383,8 @@ class Model:
             load_saved_data, train_path, val_path, test_path
         )
 
-        loss_mean = np.zeros(execution_count)
-        val_loss_mean = np.zeros(execution_count)
+        loss_mean = np.zeros(epochs)
+        val_loss_mean = np.zeros(epochs)
         Y_test_prob = np.zeros(len(Y_test))
         
         for i in range(execution_count):
