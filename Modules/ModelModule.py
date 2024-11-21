@@ -383,8 +383,8 @@ class Model:
             load_saved_data, train_path, val_path, test_path
         )
 
-        loss_mean = np.zeros(execution_count)
-        val_loss_mean = np.zeros(execution_count)
+        loss_mean = np.zeros(epochs)
+        val_loss_mean = np.zeros(epochs)
         Y_test_prob = np.zeros(len(Y_test))
         
         for i in range(execution_count):
