@@ -101,10 +101,17 @@ def generate_pdf(request):
 
     if label_1 == "1":
         p.setFillColor(colors.red)
-        p.drawString(100, y_position, f"Left leg is sick - Probability of disease: {float(prediction_1):.2f}")
+        if temp_image_2_path:
+            p.drawString(100, y_position, f"Left image leg is sick - Probability of disease: {float(prediction_1):.2f}")
+        else:
+            p.drawString(100, y_position, f"Leg is sick - Probability of disease: {float(prediction_1):.2f}")
     else:
         p.setFillColor(colors.green)
-        p.drawString(100, y_position, f"Left leg is healthy - Probability of disease: {float(prediction_1):.2f}")
+        if temp_image_2_path:
+            p.drawString(100, y_position, f"Left image leg is healthy - Probability of disease: {float(prediction_1):.2f}")
+        else:
+            p.drawString(100, y_position, f"Leg is healthy - Probability of disease: {float(prediction_1):.2f}")
+
     y_position -= 20
     p.setFillColor(colors.black)  
     y_position -= 220 
@@ -115,10 +122,10 @@ def generate_pdf(request):
         y_position -= 240
         if label_2 == "1":
             p.setFillColor(colors.red)
-            p.drawString(100, y_position + 200, f"Right leg is sick - Probability of disease: {float(prediction_2):.2f}")
+            p.drawString(100, y_position + 200, f"Right image leg is sick - Probability of disease: {float(prediction_2):.2f}")
         else:
             p.setFillColor(colors.green)
-            p.drawString(100, y_position + 200, f"Right leg is healthy - Probability of disease: {float(prediction_2):.2f}")
+            p.drawString(100, y_position + 200, f"Right image leg is healthy - Probability of disease: {float(prediction_2):.2f}")
         p.setFillColor(colors.black)  
         y_position -= 40
         p.drawImage(temp_image_2_path, 100, y_position, width=4*inch, height=3*inch)
