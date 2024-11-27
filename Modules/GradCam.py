@@ -1,7 +1,6 @@
 import keras
 import tensorflow as tf
 import matplotlib as mpl
-from Modules.ModelModule import DataPreparation
 import numpy as np
 from IPython.display import display
 
@@ -22,7 +21,7 @@ class GradCam:
     '''
     
     @staticmethod
-    def create_gradcam_heatmap(img_path: str, model: tf.keras.models.Sequential, last_conv_layer_index:int = 4, last_index: int=None) -> tf.Tensor:
+    def create_gradcam_heatmap(image, model: tf.keras.models.Sequential, last_conv_layer_index:int = 4, last_index: int=None) -> tf.Tensor:
         '''
         Method for creating Grad-CAM heatmap.
 
@@ -38,7 +37,6 @@ class GradCam:
         heatmap: tf.Tensor -> Grad-CAM heatmap.
         '''
 
-        img_array =  DataPreparation.single_photo_preparation(img_path)
         new_model = tf.keras.models.Model(inputs=model.inputs, outputs = model.outputs)
         new_model.get_layer(index=-1).activation = None
         if last_index is None:
@@ -47,7 +45,7 @@ class GradCam:
             )
         
             with tf.GradientTape(persistent=True, watch_accessed_variables=True) as tape:
-                last_conv_layer_output, preds = grad_model(img_array)
+                last_conv_layer_output, preds = grad_model(image)
                 class_channel = preds
         else:
             grad_model = keras.models.Model(
@@ -55,7 +53,7 @@ class GradCam:
             )
         
             with tf.GradientTape(persistent=True, watch_accessed_variables=True) as tape:
-                last_conv_layer_output, preds = grad_model(img_array)
+                last_conv_layer_output, preds = grad_model(image)
                 pred_index = tf.argmax(preds[0])
                 class_channel = preds[:, pred_index]
 
@@ -66,46 +64,39 @@ class GradCam:
         heatmap = last_conv_layer_output_0 @ reduced_grads[..., tf.newaxis]
         heatmap = tf.squeeze(heatmap)
         if float(tf.math.reduce_max(heatmap)) == 0:
-            return GradCam.create_gradcam_heatmap(img_path, new_model, last_conv_layer_index=last_conv_layer_index, last_index=-4)
+            return GradCam.create_gradcam_heatmap(image, new_model, last_conv_layer_index=last_conv_layer_index, last_index=-4)
         else:
             heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
             return heatmap
     
     @staticmethod
-    def display_gradcam(img_path: str, heatmap: tf.Tensor, alpha: float=0.4) -> None:
+    def overlap_gradcam(image, heatmap: tf.Tensor ,alpha: float=0.4) -> None:
         '''
-        Method for displaying Grad-CAM heatmap.
+        Method for overlaying a heatmap on an image.
 
         Arguments:
         ----------
         img_path: str -> path to a photo.
         heatmap: tf.Tensor -> Grad-CAM heatmap.
         alpha: float=0.4 -> intensivity of heatmap.
+
+        Returns:
+        --------
+        heatmap: tf.Tensor -> Grad-CAM heatmap.
         '''
-
-        img = keras.utils.load_img(img_path)
-        img = keras.utils.img_to_array(img)
-
         heatmap = np.uint8(255 * heatmap)
-
-        jet = mpl.colormaps["jet"]
-
-        jet_colors = jet(np.arange(256))[:, :3]
+        jet_colors = mpl.colormaps["jet"](np.arange(256))[:, :3]
         colored_heatmap = jet_colors[heatmap]
-
-        colored_heatmap = keras.utils.array_to_img(colored_heatmap)
-        colored_heatmap = colored_heatmap.resize((img.shape[1], img.shape[0]))
-        colored_heatmap = keras.utils.img_to_array(colored_heatmap)
-
-        composed_image = colored_heatmap * alpha + img
-        composed_image = keras.utils.array_to_img(composed_image)
-
-        display(composed_image)
+        resized_colored_heatmap = keras.utils.img_to_array(keras.utils.array_to_img(colored_heatmap).resize((224, 224)))
+        composed_image = keras.utils.array_to_img(resized_colored_heatmap * alpha + image * 255)
+        return composed_image
     
+
+
     @staticmethod
-    def create_and_display_gradcam(img_path: str, model: tf.keras.models.Sequential, last_conv_layer_index: int=4, alpha: float=0.4) -> None:
+    def create_and_overlap_gradcam(image_h,image_o, model: tf.keras.models.Sequential, last_conv_layer_index:int = 4, last_index: int=None, alpha: float=0.4) -> None:
         '''
-        Method for creating and displaying Grad-CAM heatmap.
+        Method for creating and overlapping Grad-CAM heatmap.
 
         Arguments:
         ----------
@@ -115,5 +106,6 @@ class GradCam:
         alpha: float=0.4 -> intensivity of heatmap.
         '''
 
-        heatmap = GradCam.create_gradcam_heatmap(img_path, model, last_conv_layer_index)
-        GradCam.display_gradcam(img_path, heatmap)
+        heatmap = GradCam.create_gradcam_heatmap(image_h, model, last_conv_layer_index, last_index)
+        image = GradCam.overlap_gradcam(image_o, heatmap)
+        return image
