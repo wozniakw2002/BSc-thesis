@@ -201,7 +201,7 @@ class Statistics:
         
 
     @staticmethod
-    def report(Y, Y_pred, Y_pred_prob, train_loss, val_loss):
+    def report(Y, Y_pred, Y_pred_prob, train_loss, val_loss,name):
         Statistics.plot_confusion_matrix(Y, Y_pred, True)
         Statistics.plot_learning_curve(train_loss, val_loss, True)
         Statistics.plot_probability_histogram(Y_pred_prob, True)
@@ -244,5 +244,5 @@ class Statistics:
                 pdf.multi_cell(col_width, line_height, data, border=1, ln=3, max_line_height=3)
             pdf.ln(line_height)
         
-        pdf.output("report.pdf", 'F')
+        pdf.output(f"report_{name}.pdf", 'F')
             

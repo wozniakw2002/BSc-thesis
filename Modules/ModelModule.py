@@ -383,23 +383,25 @@ class Model:
             load_saved_data, train_path, val_path, test_path
         )
 
-        loss_mean = np.zeros(epochs)
-        val_loss_mean = np.zeros(epochs)
-        Y_test_prob = np.zeros(len(Y_test))
         
-        for i in range(execution_count):
+        history = Model.train_model(model, X_train, Y_train, X_val, Y_val, epochs, batch_size)
+        predictions = Model.predict_training(model, X_train, X_val, X_test, threshold)
+
+
+        loss_mean = np.array(history.history['loss'])
+        val_loss_mean = np.array(history.history['val_loss'])
+        Y_test_prob = predictions['prediction_test'].flatten()
+        
+        
+        for _ in range(1, execution_count):
             model_test = tf.keras.models.clone_model(model)
             model_test.set_weights(model.get_weights())
             model_test.compile(optimizer='adam', loss='binary_crossentropy',
-                               metrics=['accuracy', 'AUC', 'Precision', 'Recall'])
+                            metrics=['accuracy', 'AUC', 'Precision', 'Recall'])
+                
             
-
-            if i != execution_count-1:
-                history = Model.train_model(model_test, X_train, Y_train, X_val, Y_val, epochs, batch_size)
-                predictions = Model.predict_training(model_test, X_train, X_val, X_test, threshold)
-            else:
-                history = Model.train_model(model, X_train, Y_train, X_val, Y_val, epochs, batch_size)
-                predictions = Model.predict_training(model, X_train, X_val, X_test, threshold)
+            history = Model.train_model(model_test, X_train, Y_train, X_val, Y_val, epochs, batch_size)
+            predictions = Model.predict_training(model_test, X_train, X_val, X_test, threshold)
 
            
             loss_mean += np.array(history.history['loss'])
@@ -411,7 +413,7 @@ class Model:
         Y_test_pred_prob = Y_test_prob/execution_count
         Y_test_pred = (Y_test_pred_prob > threshold).astype("int32")
 
-        Statistics.report(Y_test,Y_test_pred,Y_test_pred_prob,loss_mean,val_loss_mean)
+        Statistics.report(Y_test,Y_test_pred,Y_test_pred_prob,loss_mean,val_loss_mean,name)
 
         # Model.save_history(history, f'history_{name}')
         # Model.save_predictions(predictions, f'predictions_{name}', Y_train, Y_val, Y_test)
