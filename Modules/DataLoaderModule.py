@@ -140,7 +140,7 @@ class DataLoader:
 
         Returns:
         --------
-        
+        file anything: -> loaded pickle file
         """
 
         with open(path, 'rb') as pickle_file:
