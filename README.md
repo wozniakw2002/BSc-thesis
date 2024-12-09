@@ -35,3 +35,7 @@
 - GUI
 - Statistics and charts
 - Selecting crucial areas
+
+### Docker
+```docker pull wozniakw/bsc-thesis:v1.0```
+
