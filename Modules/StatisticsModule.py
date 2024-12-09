@@ -7,7 +7,7 @@ import seaborn as sns
 class Statistics:
     
     @staticmethod
-    def accuracy(Y: np.array, Y_pred: np.array) -> float:
+    def accuracy(Y: np.array, Y_pred: np.array) -> str:
         """
         This method counts accuracy value.
 
@@ -18,14 +18,14 @@ class Statistics:
 
         Returns:
         --------
-        float -> metrice's value
+        str -> metrice's value
         """
 
         acc = accuracy_score(Y,Y_pred) # (TP + TN)/(TP + TN + FP + FN)
         return ("%.2f"%round(acc,2)).replace('.', ',')
     
     @staticmethod
-    def f1_score(Y: np.array, Y_pred: np.array) -> float:
+    def f1_score(Y: np.array, Y_pred: np.array) -> str:
         """
         This method counts f1-score.
 
@@ -36,14 +36,14 @@ class Statistics:
 
         Returns:
         --------
-        float -> metrice's value
+        str -> metrice's value
         """
 
         f1 = f1_score(Y, Y_pred) # 2TP/(2TP + FN + FP)
         return ("%.2f"%round(float(f1),2)).replace('.', ',')
     
     @staticmethod
-    def preccision(Y: np.array, Y_pred: np.array) -> float:
+    def preccision(Y: np.array, Y_pred: np.array) -> str:
         """
         This method counts preccision value.
 
@@ -54,14 +54,14 @@ class Statistics:
 
         Returns:
         --------
-        float -> metrice's value
+        str -> metrice's value
         """
 
         pre = precision_score(Y, Y_pred) # TP/(TP + FP)
         return ("%.2f"%round(float(pre),2)).replace('.', ',')
     
     @staticmethod
-    def recall(Y: np.array, Y_pred: np.array) -> float:
+    def recall(Y: np.array, Y_pred: np.array) -> str:
         """
         This method counts recall value.
 
@@ -72,14 +72,14 @@ class Statistics:
 
         Returns:
         --------
-        float -> metrice's value
+        str -> metrice's value
         """
 
         rec = recall_score(Y, Y_pred) # TP/(TP + FN)
         return ("%.2f"%round(float(rec),2)).replace('.', ',')
 
     @staticmethod
-    def auc(Y: np.array, Y_pred_prob: np.array) -> float:
+    def auc(Y: np.array, Y_pred_prob: np.array) -> str:
         """
         This method counts AUC value.
 
@@ -90,24 +90,34 @@ class Statistics:
 
         Returns:
         --------
-        float -> metrice's value
+        str -> metrice's value
         """
 
         fpr, tpr,_ = roc_curve(Y,Y_pred_prob)
         auc_val = auc(fpr, tpr)
         
-        return "%.2f"%round(float(auc_val),2)
+        return ("%.2f"%round(float(auc_val),2)).replace(".", ".")
 
         
     @staticmethod
-    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save=False, path = 'plots/roc.png') -> None:
+    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save: bool = False, path:str = 'plots/roc.png') -> None:
         """
-        This method plots ROC curve of model.
+        Plots the Receiver Operating Characteristic (ROC) curve for a model.
 
         Parameters:
         -----------
-        Y: np.array -> array of true labels.
-        Y_pred_prob: np.array -> array of predicted probabilities.
+        Y: np.array
+            Array of true binary labels (0 or 1).
+        Y_pred_prob: np.array
+            Array of predicted probabilities for the positive class.
+        save: bool, optional
+            Whether to save the plot to a file (default is False).
+        path: str, optional
+            File path to save the plot if `save` is True (default is 'plots/roc.png').
+
+        Returns:
+        --------
+        None
         """
 
         plt.figure(figsize=(5,5))
@@ -128,14 +138,24 @@ class Statistics:
             plt.show()
 
     @staticmethod
-    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save=False, path='plots/learn.png') -> None:
+    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save: bool = False, path: str = 'plots/learn.png') -> None:
         """
-        This method plots learning curve for training and validation set.
+        Plots the learning curve, showing training and validation loss over epochs.
 
         Parameters:
         -----------
-        trains_loss: np.array -> array of traning set loss values in consecutive epochs.
-        val_loss: np.array -> array of validation set loss values in consecutive epochs.
+        train_loss: np.array
+            Array of training loss values across epochs.
+        val_loss: np.array
+            Array of validation loss values across epochs.
+        save: bool, optional
+            Whether to save the plot to a file (default is False).
+        path: str, optional
+            File path to save the plot if `save` is True (default is 'plots/learn.png').
+
+        Returns:
+        --------
+        None
         """
 
         plt.figure(figsize=(5,5))
@@ -153,14 +173,24 @@ class Statistics:
             plt.show()
     
     @staticmethod
-    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save = False, path = 'plots/conf.png') -> None:
+    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save: bool = False, path: str = 'plots/conf.png') -> None:
         """
-        This method plots confusion matrix.
+        Plots the normalized confusion matrix for the predicted and true labels.
 
         Parameters:
         -----------
-        Y: np.array -> array of true labels.
-        Y_pred: np.array -> array of predicted labels.
+        Y: np.array
+            Array of true binary labels (0 or 1).
+        Y_pred: np.array
+            Array of predicted binary labels (0 or 1).
+        save: bool, optional
+            Whether to save the plot to a file (default is False).
+        path: str, optional
+            File path to save the plot if `save` is True (default is 'plots/conf.png').
+
+        Returns:
+        --------
+        None
         """
 
         conf_matrix = confusion_matrix(Y, Y_pred,normalize='all')
@@ -176,13 +206,22 @@ class Statistics:
             plt.show()
 
     @staticmethod
-    def plot_probability_histogram(Y_pred_prob: np.array, save = False, path='plots/hist.png') -> None:
+    def plot_probability_histogram(Y_pred_prob: np.array, save: bool = False, path: str = 'plots/hist.png') -> None:
         """
-        This method plots histogram of probabilities.
+        Plots a histogram of predicted probabilities.
 
         Parameters:
         -----------
-        Y_pred_prob: np.array -> array of predicted probabilities.
+        Y_pred_prob: np.array
+            Array of predicted probabilities for the positive class.
+        save: bool, optional
+            Whether to save the plot to a file (default is False).
+        path: str, optional
+            File path to save the plot if `save` is True (default is 'plots/hist.png').
+
+        Returns:
+        --------
+        None
         """
 
         plt.figure(figsize=(5,5))
@@ -203,7 +242,29 @@ class Statistics:
         
 
     @staticmethod
-    def report(Y, Y_pred, Y_pred_prob, train_loss, val_loss,name):
+    def report(Y: np.array, Y_pred: np.array, Y_pred_prob: np.array, train_loss: np.array, val_loss: np.array, name: str) -> None:
+        """
+        Generates a comprehensive report for model evaluation, including plots and metrics.
+
+        Parameters:
+        -----------
+        Y: np.array
+            Array of true binary labels (0 or 1).
+        Y_pred: np.array
+            Array of predicted binary labels (0 or 1).
+        Y_pred_prob: np.array
+            Array of predicted probabilities for the positive class.
+        train_loss: np.array
+            Array of training loss values across epochs.
+        val_loss: np.array
+            Array of validation loss values across epochs.
+        name: str
+            Name used for saving the generated PDF report.
+
+        Returns:
+        --------
+        None
+        """
         Statistics.plot_confusion_matrix(Y, Y_pred, True)
         Statistics.plot_learning_curve(train_loss, val_loss, True)
         Statistics.plot_probability_histogram(Y_pred_prob, True)
