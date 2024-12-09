@@ -22,7 +22,7 @@ class Statistics:
         """
 
         acc = accuracy_score(Y,Y_pred) # (TP + TN)/(TP + TN + FP + FN)
-        return "%.2f"%round(acc,2)
+        return ("%.2f"%round(acc,2)).replace('.', ',')
     
     @staticmethod
     def f1_score(Y: np.array, Y_pred: np.array) -> float:
@@ -40,7 +40,7 @@ class Statistics:
         """
 
         f1 = f1_score(Y, Y_pred) # 2TP/(2TP + FN + FP)
-        return "%.2f"%round(float(f1),2)
+        return ("%.2f"%round(float(f1),2)).replace('.', ',')
     
     @staticmethod
     def preccision(Y: np.array, Y_pred: np.array) -> float:
@@ -58,7 +58,7 @@ class Statistics:
         """
 
         pre = precision_score(Y, Y_pred) # TP/(TP + FP)
-        return "%.2f"%round(float(pre),2)
+        return ("%.2f"%round(float(pre),2)).replace('.', ',')
     
     @staticmethod
     def recall(Y: np.array, Y_pred: np.array) -> float:
@@ -76,7 +76,7 @@ class Statistics:
         """
 
         rec = recall_score(Y, Y_pred) # TP/(TP + FN)
-        return "%.2f"%round(float(rec),2)
+        return ("%.2f"%round(float(rec),2)).replace('.', ',')
 
     @staticmethod
     def auc(Y: np.array, Y_pred_prob: np.array) -> float:
@@ -94,13 +94,13 @@ class Statistics:
         """
 
         fpr, tpr,_ = roc_curve(Y,Y_pred_prob)
-        auc_val = auc(fpr, tpr) # TP/(TP + FN)
+        auc_val = auc(fpr, tpr)
         
         return "%.2f"%round(float(auc_val),2)
 
         
     @staticmethod
-    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save=False) -> None:
+    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save=False, path = 'plots/roc.png') -> None:
         """
         This method plots ROC curve of model.
 
@@ -122,13 +122,13 @@ class Statistics:
         plt.legend()
         plt.title('ROC curve')
         if save:
-            plt.savefig('plots/roc.png')
+            plt.savefig(path)
             return None
         else:
             plt.show()
 
     @staticmethod
-    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save=False) -> None:
+    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save=False, path='plots/learn.png') -> None:
         """
         This method plots learning curve for training and validation set.
 
@@ -144,15 +144,16 @@ class Statistics:
         plt.title('Learning curve')
         plt.xlabel('Epochs')
         plt.ylabel('Loss')
+        plt.xticks([i for i in range(1,len(train_loss) + 1, len(train_loss)//8)])
         plt.legend()
         if save:
-            plt.savefig('plots/learn.png')
+            plt.savefig(path)
             return None
         else:
             plt.show()
     
     @staticmethod
-    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save = False) -> None:
+    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save = False, path = 'plots/conf.png') -> None:
         """
         This method plots confusion matrix.
 
@@ -167,14 +168,15 @@ class Statistics:
         sns.heatmap(conf_matrix,cmap="YlOrBr", annot=True, fmt='.2f', xticklabels=['Normall', 'Osteoarthritis'], yticklabels=['Normall', 'Osteoarthritis'])
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
+        plt.title('Confusion matrix')
         if save:
-            plt.savefig('plots/conf.png')
+            plt.savefig(path)
             return None
         else:
             plt.show()
 
     @staticmethod
-    def plot_probability_histogram(Y_pred_prob: np.array, save = False) -> None:
+    def plot_probability_histogram(Y_pred_prob: np.array, save = False, path='plots/hist.png') -> None:
         """
         This method plots histogram of probabilities.
 
@@ -194,7 +196,7 @@ class Statistics:
         plt.xticks([i/10 for i in range(11)])
         plt.xticks()
         if save:
-            plt.savefig('plots/hist.png')
+            plt.savefig(path)
             return None
         else:
             plt.show()

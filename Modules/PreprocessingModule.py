@@ -116,7 +116,7 @@ class Preprocessor:
 
         X_res = np.empty(len(X), dtype=object)
         for i in range(len(X)):
-            X_res[i] = cv2.resize(X[i], (224,224), interpolation=cv2.INTER_CUBIC)
+            X_res[i] = cv2.resize(X[i].astype(float), (224,224), interpolation=cv2.INTER_CUBIC)
         return X_res
 
     @staticmethod
@@ -133,7 +133,7 @@ class Preprocessor:
         tuple-> array of concatenated original and copied photos, array of labels.
         """
 
-        X_flipped = np.repeat(X,2)
+        X_flipped = np.repeat(X, 2)
         Y_flipped = np.repeat(Y, 2)
         for i in range(len(X)):
             X_flipped[2*i] = cv2.flip(X_flipped[2*i], 1)
