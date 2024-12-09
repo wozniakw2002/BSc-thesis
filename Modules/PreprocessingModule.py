@@ -43,7 +43,8 @@ class Preprocessor:
         return normalized
     
     @staticmethod
-    def split_data(X: np.array, Y: np.array, val_size = 0.15, test_size = 0.2) -> tuple:
+    def split_data(X: np.array, Y: np.array, val_size: float = 0.15, test_size: float = 0.2) -> tuple[np.array, np.array, np.array, 
+                                                                                                      np.array, np.array, np.array]:
         """
         This static method splits data into training, test and validation sets.
 
@@ -51,8 +52,8 @@ class Preprocessor:
         ----------
         X: np.array -> Array of photos.
         Y: np.array -> array of labels.
-        val_size: float -> the ratio of the validation set to the entire data.
-        test_size: float -> the ratio of the test set to the entire data.
+        val_size: float = 0.15 -> the ratio of the validation set to the entire data.
+        test_size: float = 0.2 -> the ratio of the test set to the entire data.
 
         Returns:
         --------
@@ -64,7 +65,7 @@ class Preprocessor:
         return X_train, X_test, X_valid, Y_train, Y_test, Y_valid
 
     @staticmethod
-    def split_wide_photos(X: np.array, Y : np.array = None) -> tuple:
+    def split_wide_photos(X: np.array, Y : np.array = None) -> tuple[np.array, np.array]:
         """
         This static method splits photos with two knees into 2 photos with one knee on each.
 
@@ -75,7 +76,7 @@ class Preprocessor:
 
         Returns:
         --------
-        tuple -> Arrays of splitaed data.
+        tuple -> Arrays of splitted data.
         """
 
         indexes = [i for i, v in enumerate(X) if np.shape(v) == (161,640)]
@@ -120,7 +121,7 @@ class Preprocessor:
         return X_res
 
     @staticmethod
-    def flip_photos(X: np.array, Y: np.array) -> tuple:
+    def flip_photos(X: np.array, Y: np.array) -> tuple[np.array, np.array]:
         """
         This static method makes a copy of every photo by flipping it by y-axis.
 
@@ -141,7 +142,7 @@ class Preprocessor:
         return X_flipped, Y_flipped
     
     @staticmethod
-    def preprocessing(X: np.array, Y: np.array = None) -> tuple:
+    def preprocessing(X: np.array, Y: np.array = None) -> tuple[np.array, np.array]:
         """
         This static method performs preprocessing on the input data X and Y by 
         splitting, resizing, and normalizing the images.
@@ -163,7 +164,7 @@ class Preprocessor:
 
 
     @staticmethod
-    def augmentation(X: np.array, Y:np.array) -> tuple:
+    def augmentation(X: np.array, Y:np.array) -> tuple[np.array, np.array]:
         """
         This static method rotates and flips photos in every direction.
 
