@@ -6,35 +6,40 @@ from IPython.display import display
 
 class GradCam:
     '''
-    This class contains methods for visualise what CNN is actually looking at, using the Grad-CAM method.
+    This class contains methods to visualize what a Convolutional Neural Network (CNN) is focusing on using the Grad-CAM method.
 
     Methods:
     --------
-    create_gradcam_heatmap(img_path, model, last_conv_layer_index=4, last_index=None)
-        Method for creating Grad-CAM heatmap.
-    
-    display_gradcam(img_path, heatmap, alpha=0.4)
-        Method for displaying Grad-Cam heatmap.
+    create_gradcam_heatmap(image, model, last_conv_layer_index=4, last_index=None) -> tf.Tensor:
+        Creates a Grad-CAM heatmap for a given image and model.
 
-    create_and_display_gradcam(img_path, model, last_conv_layer_index=4, alpha=0.4)
-        Method for both creating and displaying Grad-Cam heatmap.
+    overlap_gradcam(image, heatmap, alpha=0.4) -> tf.Tensor:
+        Overlays a Grad-CAM heatmap onto the input image.
+
+    create_and_overlap_gradcam(image_h, image_o, model, last_conv_layer_index=4, last_index=None, alpha=0.4) -> np.array:
+        Creates and overlays a Grad-CAM heatmap onto the input image in a single step.
     '''
-    
+
     @staticmethod
-    def create_gradcam_heatmap(image, model: tf.keras.models.Sequential, last_conv_layer_index:int = 4, last_index: int=None) -> tf.Tensor:
+    def create_gradcam_heatmap(image, model: tf.keras.models.Sequential, last_conv_layer_index: int = 4, last_index: int = None) -> tf.Tensor:
         '''
-        Method for creating Grad-CAM heatmap.
+        Creates a Grad-CAM heatmap.
 
         Arguments:
         ----------
-        img_path: str -> path to a photo.
-        model: tf.keras.models.Sequential -> model on which we are performing Grad-CAM.
-        last_conv_layer_index:int = 4 -> index of last concolutional layer
-        last_index: int=None -> index of layer performing prediction. If None then it's last layer.
+        image: tf.Tensor
+            Input image tensor for which Grad-CAM is being generated.
+        model: tf.keras.models.Sequential
+            Model to be used for Grad-CAM generation.
+        last_conv_layer_index: int, default=4
+            Index of the last convolutional layer in the model.
+        last_index: int, default=None
+            Index of the layer used for predictions. If None, the last layer is used.
 
         Returns:
         --------
-        heatmap: tf.Tensor -> Grad-CAM heatmap.
+        heatmap: tf.Tensor
+            Grad-CAM heatmap tensor.
         '''
 
         new_model = tf.keras.models.Model(inputs=model.inputs, outputs = model.outputs)
@@ -70,20 +75,25 @@ class GradCam:
             return heatmap
     
     @staticmethod
-    def overlap_gradcam(image, heatmap: tf.Tensor ,alpha: float=0.4) -> None:
+    def overlap_gradcam(image, heatmap: tf.Tensor, alpha: float = 0.4) -> tf.Tensor:
         '''
-        Method for overlaying a heatmap on an image.
+        Overlays a Grad-CAM heatmap onto an image.
 
         Arguments:
         ----------
-        img_path: str -> path to a photo.
-        heatmap: tf.Tensor -> Grad-CAM heatmap.
-        alpha: float=0.4 -> intensivity of heatmap.
+        image: tf.Tensor
+            Original image tensor.
+        heatmap: tf.Tensor
+            Grad-CAM heatmap tensor.
+        alpha: float, default=0.4
+            Intensity factor for overlaying the heatmap.
 
         Returns:
         --------
-        heatmap: tf.Tensor -> Grad-CAM heatmap.
+        composed_image: tf.Tensor
+            Image with the heatmap overlay applied.
         '''
+
         heatmap = np.uint8(255 * heatmap)
         jet_colors = mpl.colormaps["jet"](np.arange(256))[:, :3]
         colored_heatmap = jet_colors[heatmap]
@@ -94,18 +104,31 @@ class GradCam:
 
 
     @staticmethod
-    def create_and_overlap_gradcam(image_h,image_o, model: tf.keras.models.Sequential, last_conv_layer_index:int = 4, last_index: int=None, alpha: float=0.4) -> None:
+    def create_and_overlap_gradcam(image_h, image_o, model: tf.keras.models.Sequential, last_conv_layer_index: int = 4, last_index: int = None, alpha: float = 0.4) -> np.array:
         '''
-        Method for creating and overlapping Grad-CAM heatmap.
+        Combines Grad-CAM heatmap generation and overlaying in a single step.
 
         Arguments:
         ----------
-        img_path: str -> path to a photo.
-        model: tf.keras.models.Sequential -> model on which we are creating Grad-CAM.
-        last_conv_layer_index:int = 4 -> index of last concolutional layer
-        alpha: float=0.4 -> intensivity of heatmap.
+        image_h: tf.Tensor
+            Image tensor used for heatmap generation.
+        image_o: tf.Tensor
+            Original image tensor for overlaying the heatmap.
+        model: tf.keras.models.Sequential
+            Model to be used for Grad-CAM generation.
+        last_conv_layer_index: int, default=4
+            Index of the last convolutional layer in the model.
+        last_index: int, default=None
+            Index of the layer used for predictions. If None, the last layer is used.
+        alpha: float, default=0.4
+            Intensity factor for overlaying the heatmap.
+
+        Returns:
+        --------
+        image: np.array
+            Image with the heatmap overlay applied.
         '''
 
         heatmap = GradCam.create_gradcam_heatmap(image_h, model, last_conv_layer_index, last_index)
-        image = GradCam.overlap_gradcam(image_o, heatmap)
+        image = GradCam.overlap_gradcam(image_o, heatmap, alpha)
         return image
