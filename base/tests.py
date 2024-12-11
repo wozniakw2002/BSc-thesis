@@ -1,6 +1,5 @@
 import pytest
 from django.urls import reverse
-from .forms import ImageUploadForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from io import BytesIO
