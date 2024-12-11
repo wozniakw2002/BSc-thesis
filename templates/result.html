@@ -45,7 +45,7 @@
         }
 
  
-        .sick-text {
+        .unhealthy-text {
             color: #e74c3c;
         }
 
@@ -102,12 +102,12 @@
 <div class="image-container">
     {% if label_1 == 1 %}
         {% if image_2 %}
-        <h2 class="result-text sick-text">Left image leg is sick - Probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+        <h2 class="result-text unhealthy-text">Left knee is unhealthy - Probability of disease: {{ prediction_1|floatformat:2 }}</h2>
         {% else %}
-        <h2 class="result-text sick-text">Leg is sick - probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+        <h2 class="result-text unhealthy-text">knee is unhealthy - probability of disease: {{ prediction_1|floatformat:2 }}</h2>
         {% endif %}
     {% else %}
-        <h2 class="result-text healthy-text">The leg is healthy - probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+        <h2 class="result-text healthy-text">Knee is healthy - probability of disease: {{ prediction_1|floatformat:2 }}</h2>
     {% endif %}
     <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>
     <img class="result-image" src="data:image/png;base64,{{ image_1 }}" alt="Processed Image 1">
@@ -117,9 +117,9 @@
 {% if image_2 %}
     <div class="image-container second-image-container">
         {% if label_2 == 1 %}
-        <h2 class="result-text sick-text">Right image leg is sick - probability of disease: {{ prediction_2|floatformat:2 }}</h2>
+        <h2 class="result-text unhealthy-text">Right knee is unhealthy - probability of disease: {{ prediction_2|floatformat:2 }}</h2>
         {% else %}
-        <h2 class="result-text healthy-text">The leg is healthy - probability of disease: {{ prediction_2|floatformat:2 }}</h2>
+        <h2 class="result-text healthy-text">Knee is healthy - probability of disease: {{ prediction_2|floatformat:2 }}</h2>
         {% endif %}
         <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>
         <img class="result-image" src="data:image/png;base64,{{ image_2 }}" alt="Processed Image 2">

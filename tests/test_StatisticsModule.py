@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 from tempfile import NamedTemporaryFile
 from Modules.StatisticsModule import Statistics
-os.environ['TCL_LIBRARY'] = r'C:\Users\wikto\AppData\Local\Programs\Python\Python312\tcl\tcl8.6'
 
 def test_accuracy():
     Y = np.array([1,0,1,0,1,1])
