@@ -129,3 +129,15 @@ def test_generate_pdf_post_wide(client, uploaded_image):
     assert 'Prediction Report' in pdf_text
     assert 'Left knee is healthy' in pdf_text
     assert 'Right knee is unhealthy' in pdf_text
+
+def test_model_info(client):
+    url = reverse('modelInfo')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert b'Model Info' in response.content
+
+def test_user_guide(client):
+    url = reverse('userGuide')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert b'User Guide' in response.content
