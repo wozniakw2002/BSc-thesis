@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 from tempfile import NamedTemporaryFile
 from Modules.StatisticsModule import Statistics
-os.environ['TCL_LIBRARY'] = r'C:\Users\wikto\AppData\Local\Programs\Python\Python312\tcl\tcl8.6'
 
 def test_accuracy():
     Y = np.array([1,0,1,0,1,1])
@@ -24,11 +23,23 @@ def test_preccision():
     prec = Statistics.preccision(Y, Y_test)
     assert prec == '1,00'
 
+def test_preccision_denominator_0():
+    Y = np.array([1,0,1,0,1,1])
+    Y_test = np.array([0,0,0,0,0,0])
+    prec = Statistics.preccision(Y, Y_test)
+    assert prec == '0,00'
+
 def test_recall():
     Y = np.array([1,0,1,0,1,1])
     Y_test = np.array([1,0,1,0,0,0])
     prec = Statistics.recall(Y, Y_test)
     assert prec == '0,50'
+
+def test_recall_denominator_0():
+    Y = np.array([1,0,1,0,1,1])
+    Y_test = np.array([0,1,0,1,0,0])
+    prec = Statistics.recall(Y,Y_test)
+    assert prec == '0,00'
 
 def test_plot_roc_curve():
     Y = np.array([1,0,1,0,1,1])
