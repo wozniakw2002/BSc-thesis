@@ -23,11 +23,23 @@ def test_preccision():
     prec = Statistics.preccision(Y, Y_test)
     assert prec == '1,00'
 
+def test_preccision_denominator_0():
+    Y = np.array([1,0,1,0,1,1])
+    Y_test = np.array([0,0,0,0,0,0])
+    prec = Statistics.preccision(Y, Y_test)
+    assert prec == '0,00'
+
 def test_recall():
     Y = np.array([1,0,1,0,1,1])
     Y_test = np.array([1,0,1,0,0,0])
     prec = Statistics.recall(Y, Y_test)
     assert prec == '0,50'
+
+def test_recall_denominator_0():
+    Y = np.array([1,0,1,0,1,1])
+    Y_test = np.array([0,1,0,1,0,0])
+    prec = Statistics.recall(Y,Y_test)
+    assert prec == '0,00'
 
 def test_plot_roc_curve():
     Y = np.array([1,0,1,0,1,1])
