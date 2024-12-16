@@ -261,10 +261,12 @@ class Model:
             The history object containing details of the training process.
         """
 
+        stop_early = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
         history = model.fit(
             X_train, Y_train,
             validation_data=(X_val, Y_val),
-            epochs=epochs, batch_size=batch_size
+            epochs=epochs, batch_size=batch_size,
+            callbacks=[stop_early]
         )
 
         history.history['f1_score'] = Model.f1_score(
