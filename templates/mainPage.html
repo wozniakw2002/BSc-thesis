@@ -159,10 +159,8 @@
                 </div>
 
                 <div id="error-message" class="alert alert-danger" style="display: none;">
-                    Please select at least one visualization method!
                 </div>
                 <div id="file-error-message" class="alert alert-danger" style="display: none;">
-                    Please select a valid image file (JPEG, PNG, JPG).
                 </div>
         
             </form>
@@ -181,36 +179,38 @@
             const visualizations = document.querySelectorAll('input[name="visualizations"]:checked');
             const imageFile = document.querySelector('#id_image').files[0];
             const validImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
-    
+            // const isImage = imageFile && imageFile.type.startsWith('image/');
+
             let isValid = true;
-    
-            if (visualizations.length === 0) {
-                const errorMessage = document.querySelector('#error-message');
+
+            function showError(id, message) {
+                const errorMessage = document.querySelector(id);
+                errorMessage.textContent = message;
                 errorMessage.style.display = 'block';
+            }
+
+            if (visualizations.length === 0) {
+                showError('#error-message', 'Please select at least one visualization method!');
                 isValid = false;
             } else {
                 document.querySelector('#error-message').style.display = 'none';
             }
-    
+
             if (!imageFile) {
-                const fileErrorMessage = document.querySelector('#file-error-message');
-                fileErrorMessage.textContent = 'Please select an image file.';
-                fileErrorMessage.style.display = 'block';
+                showError('#file-error-message', 'Please select an image file.');
                 isValid = false;
             } else if (!validImageFormats.includes(imageFile.type)) {
-                const fileErrorMessage = document.querySelector('#file-error-message');
-                fileErrorMessage.textContent = 'Please select a valid image file (JPG, JPEG, PNG).';
-                fileErrorMessage.style.display = 'block';
+                showError('#file-error-message', 'Please select a valid image file (JPG, JPEG, PNG).');
                 isValid = false;
             } else {
                 document.querySelector('#file-error-message').style.display = 'none';
             }
-    
+
             if (!isValid) {
                 event.preventDefault();
             }
         });
     </script>
-    
 </body>
 </html>
+
