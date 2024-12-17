@@ -4,14 +4,34 @@ import numpy as np
 from lime import lime_image
 import matplotlib.pyplot as plt
 from skimage.segmentation import mark_boundaries
+import keras
+import io
+import numpy as np
+from PIL import Image
+
 
 class Interpretation:
     def show_shap(model, photo):
         background = DataLoader.load_pickle_file('background.pickle')
         e = shap.DeepExplainer(model, background)
         shap_values = e.shap_values(photo)
-        return shap.image_plot(shap_values,photo)
+        
+
+        plt.figure() 
+        shap.image_plot(shap_values, photo, show=False) 
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight') 
+        buf.seek(0)
+        plt.close()
+
+        image = Image.open(buf)
+        image_array = np.array(image)
+        buf.close()
+        
+        return keras.utils.array_to_img(image_array)
     
+    
+
     def get_class_probabilities(input_images, model):
         if len(np.shape(input_images)) == 4:
             images = np.empty(len(input_images), dtype=object)
@@ -41,4 +61,4 @@ class Interpretation:
                         labels=[0,1], num_samples=num_samples)
 
         image, mask = explanation.get_image_and_mask(label=label,positive_only=True, hide_rest=False)
-        plt.imshow(mark_boundaries(image, mask))
+        return keras.utils.array_to_img(mark_boundaries(image, mask))
