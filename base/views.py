@@ -15,6 +15,8 @@ from reportlab.lib.units import inch
 import numpy as np
 from reportlab.lib import colors
 from Modules.InterpretationModule import Interpretation
+import matplotlib
+matplotlib.use('agg')
 
 def mainPage(request):
     if request.method == 'POST':
@@ -43,6 +45,8 @@ def mainPage(request):
    
             
             for i in range(len(processed_image)):
+                context[f'prediction_{i+1}'] = int(prediction[i][0]*100)
+                context[f'label_{i+1}'] = label[i][0]
     
                 if 'gradcam' in visualizations:
                     GradCam_str = convert_to_base64(GradCam.create_and_overlap_gradcam(np.array([processed_image[i]]), processed_image[i], model))
@@ -50,17 +54,13 @@ def mainPage(request):
 
                 
                 if 'lime' in visualizations:
-                    Lime_str = convert_to_base64(Interpretation.show_lime_interpretation(model, np.array([processed_image[i]]), 1))
+                    Lime_str = convert_to_base64(Interpretation.show_lime_interpretation(model, np.array([processed_image[i]]),label[i][0] ))
                     context[f'Lime_image_{i+1}'] = Lime_str
 
             
                 if 'shap' in visualizations:
                     Shap_str = convert_to_base64(Interpretation.show_shap(model, np.array([processed_image[i]])))
                     context[f'ShapValues_image_{i+1}'] = Shap_str
-
-        
-                context[f'prediction_{i+1}'] = prediction[i][0]
-                context[f'label_{i+1}'] = label[i][0]
 
             return render(request, 'result.html', context)
 
@@ -116,10 +116,10 @@ def generate_pdf(request):
 
         if label_1 == "1":
             p.setFillColor(colors.red)
-            p.drawString(100, y_position, f"Left knee is unhealthy - Probability of disease: {float(prediction_1):.2f}")
+            p.drawString(100, y_position, f"Left knee is unhealthy - Probability of disease: {int(prediction_1)}%.")
         else:
             p.setFillColor(colors.green)
-            p.drawString(100, y_position, f"Left knee is healthy - Probability of disease: {float(prediction_1):.2f}")
+            p.drawString(100, y_position, f"Left knee is healthy - Probability of disease: {int(prediction_1)}%.")
 
         def check_and_add_new_page(h=250):
             nonlocal y_position
@@ -148,10 +148,10 @@ def generate_pdf(request):
             y_position -= 50
             if label_2 == "1":
                 p.setFillColor(colors.red)
-                p.drawString(100, y_position, f"Right knee is unhealthy - Probability of disease: {float(prediction_2):.2f}")
+                p.drawString(100, y_position, f"Right knee is unhealthy - Probability of disease: {int(prediction_2)}%.")
             else:
                 p.setFillColor(colors.green)
-                p.drawString(100, y_position, f"Right knee is healthy - Probability of disease: {float(prediction_2):.2f}")
+                p.drawString(100, y_position, f"Right knee is healthy - Probability of disease: {int(prediction_2)}%.")
             
             
             if temp_grad_2_path:
