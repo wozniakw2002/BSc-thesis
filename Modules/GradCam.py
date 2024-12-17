@@ -3,6 +3,7 @@ import tensorflow as tf
 import matplotlib as mpl
 import numpy as np
 from IPython.display import display
+import copy
 
 class GradCam:
     '''
@@ -41,8 +42,8 @@ class GradCam:
         heatmap: tf.Tensor
             Grad-CAM heatmap tensor.
         '''
-
-        new_model = tf.keras.models.Model(inputs=model.inputs, outputs = model.outputs)
+        new_model = tf.keras.models.clone_model(model)
+        new_model = tf.keras.models.Model(inputs=new_model.inputs, outputs = new_model.outputs)
         new_model.get_layer(index=-1).activation = None
         if last_index is None:
             grad_model = keras.models.Model(

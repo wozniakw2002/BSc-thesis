@@ -63,7 +63,6 @@
         }
 
 
-
         .btn-primary {
             background-color: #007bff;
             color: white;
@@ -88,9 +87,18 @@
 
     <div class="result-card">
         {% if label_1 == 1 %}
-            <h2 class="unhealthy-text">Knee is unhealthy - Probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+            {% if label_2 %}
+                <h2 class="unhealthy-text">Probability of disease: {{ prediction_1}}%.
+                </h2><h2 class="unhealthy-text">  Prediction: left knee is unhealthy. </h2>
+            {% else %}
+                <h2 class="unhealthy-text">Knee is unhealthy - Probability of disease: {{ prediction_1}}%.</h2>
+            {% endif %}
         {% else %}
-            <h2 class="healthy-text">Knee is healthy - Probability of disease: {{ prediction_1|floatformat:2 }}</h2>
+            {% if label_2 %}
+                <h2 class="healthy-text">Left knee is healthy - Probability of disease: {{ prediction_1}}%.</h2>
+            {% else %}
+                <h2 class="healthy-text">Knee is healthy - Probability of disease: {{ prediction_1}}%.</h2>
+            {% endif %}
         {% endif %}
 
         <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>
@@ -114,9 +122,9 @@
     {% if label_2 %}
     <div class="result-card">
         {% if label_2 == 1 %}
-            <h2 class="unhealthy-text">Right knee is unhealthy - Probability of disease: {{ prediction_2|floatformat:2 }}</h2>
+            <h2 class="unhealthy-text">Right knee is unhealthy - Probability of disease: {{ prediction_2}}%.</h2>
         {% else %}
-            <h2 class="healthy-text">Knee is healthy - Probability of disease: {{ prediction_2|floatformat:2 }}</h2>
+            <h2 class="healthy-text">Knee is healthy - Probability of disease: {{ prediction_2}}%.</h2>
         {% endif %}
 
         <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>

@@ -49,7 +49,7 @@ class Interpretation:
         probabilities = np.zeros((len(pred), num_classes))
         for i in range(len(pred)):
             probabilities[i, 1] = pred[i]  
-            probabilities[i, 0] = 1 - pred[i] 
+            probabilities[i, 0] = 1 - pred[i]
         return probabilities
     
     def show_lime_interpretation(model, photo, label, num_samples=100):
