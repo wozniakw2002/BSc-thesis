@@ -88,8 +88,7 @@
     <div class="result-card">
         {% if label_1 == 1 %}
             {% if label_2 %}
-                <h2 class="unhealthy-text">Probability of disease: {{ prediction_1}}%.
-                </h2><h2 class="unhealthy-text">  Prediction: left knee is unhealthy. </h2>
+                <h2 class="unhealthy-text">Left knee is unhealthy - Probability of disease: {{ prediction_1}}%.</h2>
             {% else %}
                 <h2 class="unhealthy-text">Knee is unhealthy - Probability of disease: {{ prediction_1}}%.</h2>
             {% endif %}

@@ -22,7 +22,7 @@ class GradCam:
     '''
 
     @staticmethod
-    def create_gradcam_heatmap(image, model: tf.keras.models.Sequential, last_conv_layer_index: int = 4, last_index: int = None) -> tf.Tensor:
+    def create_gradcam_heatmap(image, model: tf.keras.models.Sequential, last_conv_layer_index: int = 5, last_index: int = None) -> tf.Tensor:
         '''
         Creates a Grad-CAM heatmap.
 
@@ -70,7 +70,7 @@ class GradCam:
         heatmap = last_conv_layer_output_0 @ reduced_grads[..., tf.newaxis]
         heatmap = tf.squeeze(heatmap)
         if float(tf.math.reduce_max(heatmap)) == 0:
-            return GradCam.create_gradcam_heatmap(image, new_model, last_conv_layer_index=last_conv_layer_index, last_index=-4)
+            return GradCam.create_gradcam_heatmap(image, new_model, last_conv_layer_index=last_conv_layer_index, last_index=last_conv_layer_index+2)
         else:
             heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
             return heatmap
