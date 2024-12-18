@@ -49,7 +49,7 @@ def mainPage(request):
                 context[f'label_{i+1}'] = label[i][0]
     
                 if 'gradcam' in visualizations:
-                    GradCam_str = convert_to_base64(GradCam.create_and_overlap_gradcam(np.array([processed_image[i]]), processed_image[i], model))
+                    GradCam_str = convert_to_base64(GradCam.create_and_overlap_gradcam(processed_image[i], model))
                     context[f'GradCam_image_{i+1}'] = GradCam_str
 
                 
