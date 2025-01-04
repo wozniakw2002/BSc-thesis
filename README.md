@@ -39,3 +39,6 @@
 ### Docker
 ```docker pull wozniakw/bsc-thesis:v1.0```
 
+### Script to donwload
+[Download app](https://github.com/wozniakw2002/BSc-thesis/blob/wozniakw2002-patch-1/app.cmd)
+
