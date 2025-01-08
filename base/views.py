@@ -108,19 +108,32 @@ def generate_pdf(request):
         p = canvas.Canvas(response, pagesize=letter)
         width, height = letter
 
-        p.setFont("Helvetica-Bold", 16)
+        p.setFont("Helvetica-Bold", 18)
         p.drawString(100, height - 50, "Prediction Report")
 
-        y_position = height - 100
-        p.setFont("Helvetica-Bold", 14)
+        y_position = height - 80
+        p.setFont("Helvetica-Bold", 16)
 
         if label_1 == "1":
             p.setFillColor(colors.red)
-            p.drawString(100, y_position, f"Left knee is unhealthy - Probability of disease: {int(prediction_1)}%.")
+            if prediction_2:
+                p.drawString(100, y_position, f"Probability of disease: {int(prediction_1)}%.")
+                y_position -=20
+                p.drawString(100, y_position, "Prediction: Left knee is unhealthy")
+            else:
+                p.drawString(100, y_position, f"Probability of disease: {int(prediction_1)}%.")
+                y_position -=20
+                p.drawString(100, y_position, "Prediction: Knee is unhealthy")
         else:
             p.setFillColor(colors.green)
-            p.drawString(100, y_position, f"Left knee is healthy - Probability of disease: {int(prediction_1)}%.")
-
+            if prediction_2:
+                p.drawString(100, y_position, f"Probability of disease: {int(prediction_1)}%.")
+                y_position -=20
+                p.drawString(100, y_position, "Prediction: Left knee is healthy")
+            else:
+                p.drawString(100, y_position, f"Probability of disease: {int(prediction_1)}%.")
+                y_position -=20
+                p.drawString(100, y_position, "Prediction: Knee is healthy")
         def check_and_add_new_page(h=250):
             nonlocal y_position
             if y_position < h:
@@ -129,43 +142,71 @@ def generate_pdf(request):
 
         if temp_grad_1_path:
             check_and_add_new_page()
-            y_position -= 240
+            p.setFont("Helvetica-Bold", 14)
+            p.setFillColor(colors.black)
+            y_position -=50
+            p.drawString(100, y_position, "GradCam")
+            y_position -= 230
             p.drawImage(temp_grad_1_path, 100, y_position)
 
         if temp_lime_1_path:
             check_and_add_new_page()
-            y_position -= 240
+            p.setFont("Helvetica-Bold", 14)
+            p.setFillColor(colors.black)
+            y_position -=50
+            p.drawString(100, y_position, "LIME")
+            y_position -= 230
             p.drawImage(temp_lime_1_path, 100, y_position)
             
         if temp_shap_1_path:
             check_and_add_new_page(390)
-            y_position -= 380
+            p.setFont("Helvetica-Bold", 14)
+            p.setFillColor(colors.black)
+            y_position -=50
+            p.drawString(100, y_position, "Deep SHAP")
+            y_position -= 350
             p.drawImage(temp_shap_1_path, 80, y_position)
 
         if prediction_2:
             check_and_add_new_page(300)
-            p.setFont("Helvetica-Bold", 14)
+            p.setFont("Helvetica-Bold", 16)
             y_position -= 50
             if label_2 == "1":
                 p.setFillColor(colors.red)
-                p.drawString(100, y_position, f"Right knee is unhealthy - Probability of disease: {int(prediction_2)}%.")
+                p.drawString(100, y_position, f"Probability of disease: {int(prediction_2)}%.")
+                y_position -=20
+                p.drawString(100, y_position, "Prediction: Right knee is unhealthy")
             else:
                 p.setFillColor(colors.green)
-                p.drawString(100, y_position, f"Right knee is healthy - Probability of disease: {int(prediction_2)}%.")
+                p.drawString(100, y_position, f"Probability of disease: {int(prediction_2)}%.")
+                y_position -=20
+                p.drawString(100, y_position, "Prediction: Right knee is healthy")
             
-            
+        
             if temp_grad_2_path:
-                y_position -= 240
+                p.setFont("Helvetica-Bold", 14)
+                p.setFillColor(colors.black)
+                y_position -=50
+                p.drawString(100, y_position, "GradCam")
+                y_position -= 230
                 p.drawImage(temp_grad_2_path, 100, y_position)
                 
             if temp_lime_2_path:
                 check_and_add_new_page()
-                y_position -= 240
+                p.setFont("Helvetica-Bold", 14)
+                p.setFillColor(colors.black)
+                y_position -=50
+                p.drawString(100, y_position, "LIME")
+                y_position -= 230
                 p.drawImage(temp_lime_2_path, 100, y_position)
             
             if temp_shap_2_path:
                 check_and_add_new_page(390)
-                y_position -= 380
+                p.setFont("Helvetica-Bold", 14)
+                p.setFillColor(colors.black)
+                y_position -=50
+                p.drawString(100, y_position, "Deep SHAP")
+                y_position -= 350
                 p.drawImage(temp_shap_2_path, 80, y_position)
 
         p.showPage()

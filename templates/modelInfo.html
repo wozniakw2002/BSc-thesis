@@ -1,1 +1,111 @@
-<h1>Model Info</h1>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Description</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <h1>Model Description, Results, and Visualization Methods</h1>
+
+    <h2>Model Description</h2>
+    <p>The implemented model is a <strong>Convolutional Neural Network</strong>. Below are the key architectural components:</p>
+
+    <h3>1. Convolutional Layers</h3>
+    <ul>
+        <li><strong>Layers:</strong> Two convolutional layers with kernel sizes: <strong>3×3, 3×3</strong>.</li>
+        <li><strong>Filters:</strong> Number of kernels per layer: <strong>32, 64</strong>.</li>
+        <li><strong>Activation:</strong> Each layer uses the <strong>ReLU</strong> activation function.</li>
+        <li><strong>Pooling:</strong> A <strong>2×2 Max Pooling</strong> layer follows each convolutional layer.</li>
+    </ul>
+
+    <h3>2. Fully Connected Layers</h3>
+    <ul>
+        <li><strong>Flattening</strong>
+        <li><strong>Dense Layer:</strong> One fully connected layer with <strong>64</strong> neurons.</li>
+        <li><strong>Activation:</strong> Layer uses the <strong>ReLU</strong> activation function.</li>
+    </ul>
+
+    <h3>3. Output Layer</h3>
+    <ul>
+        <li>A single neuron with the <strong>sigmoid</strong> activation function for binary classification.</li>
+    </ul>
+
+    <h2>Model Results</h2>
+
+    <h3>Performance Metrics</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Accuracy</td>
+                <td>90</td>
+            </tr>
+            <tr>
+                <td>Precision</td>
+                <td>92</td>
+            </tr>
+            <tr>
+                <td>Recall</td>
+                <td>93</td>
+            </tr>
+            <tr>
+                <td>F1 Score</td>
+                <td>93</td>
+            </tr>
+            <tr>
+                <td>AUC</td>
+                <td>96</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Visual Results</h3>
+    <ul>
+        <img src="{% static 'roc.png' %}" alt="ROC Curve" style="width:100%; max-width:600px;">
+        <img src="{% static 'hist.png' %}" alt="Probability Distribution Chart" style="width:100%; max-width:600px;">
+        <img src="{% static 'conf.png' %}" alt="Confusion Matrix" style="width:100%; max-width:600px;">
+    </ul>
+
+    <h2>Visualization Methods</h2>
+    <h3>Grad-CAM</h3>
+    <p>Grad-CAM is a gradient-based method for visualizing important regions for a network. It uses the gradients of the predicted class with respect to the last convolutional layer. These gradients are calculated for each feature map and then averaged across each map. This creates a weight vector, where each element is multiplied by its corresponding feature map. In the final step, the maps are overlaid on top of each other, and a ReLU function is applied. This results in the expected heatmap, showing the regions that are important to the model.</p>
+    <h3>LIME</h3>
+    <p>The LIME method detects linear relationships that are locally close to the original instances. It is a model explanation method using a simpler model. In our case, it is a linear model. To find the optimal weights for the linear model, a function is minimized that depends on the proximity of models, sample weights, and a complexity measure, which is the number of non-zero weights in the model.</p>
+    <h3>Deep SHAP</h3>
+    <p>Deep SHAP is an iterative method that combines SHAP values and DeepLIFT. The influence values of individual pixels are calculated using the conditional expected value of SHAP values and a reference image sample. With many samples, in our case 100, the calculated SHAP values sum up to the actual difference between the value returned by the model and the model's expected value.</p>
+</body>
+</html>
