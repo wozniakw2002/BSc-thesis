@@ -1,1 +1,48 @@
-<h1>User Guide</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application User Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Application User Guide</h1>
+    <p>This application is designed to predict whether a knee in an uploaded image shows signs of osteoarthritis. It also visualizes the key regions of the knee that contribute to the model's predictions.</p>
+
+    <h2>Home Page</h2>
+    <p>The <strong>Learn More About the Model</strong> section provides detailed information about the model, including its architecture, performance results, and the visualization techniques used to interpret predictions.</p>
+    <p>In the <strong>Select an Image</strong> field, users can upload an image of a knee for analysis. The image must be in <strong>PNG, JPG, or JPEG</strong> format.</p>
+    <p>In the <strong>Select Visualization Methods</strong> field, users can choose one or more visualization methods to highlight the critical regions of the knee used by the model in its analysis. Selecting at least one method is required.</p>
+    <p>To obtain a prediction:
+        <ul>
+            <li>Upload a knee image in the required format.</li>
+            <li>Select at least one visualization method.</li>
+            <li>Click the <strong>Upload</strong> button.</li>
+        </ul>
+        The prediction time varies based on the chosen visualization methods. For faster results, users primarily interested in the prediction (without detailed visualizations) are recommended to select the <strong>Grad-CAM</strong> method.
+    </p>
+
+    <h2>Results Page</h2>
+    <p>On the results page, users can view:
+        <ul>
+            <li>The probability of osteoarthritis detection.</li>
+            <li>The prediction indicating whether the knee is diseased.</li>
+            <li>Visualizations of the model's interpretation, based on the selected methods.</li>
+        </ul>
+    </p>
+    <p>Users can download a summary of the analysis, including displayed information and images, by clicking the <strong>Download Report</strong> button. The report is generated in PDF format.</p>
+</body>
+
+</html>

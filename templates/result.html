@@ -89,15 +89,18 @@
         {% if label_1 == 1 %}
             {% if label_2 %}
                 <h2 class="unhealthy-text">Probability of disease: {{ prediction_1}}%.
-                </h2><h2 class="unhealthy-text">  Prediction: left knee is unhealthy. </h2>
+                </h2><h2 class="unhealthy-text">  Prediction: Left knee is unhealthy. </h2>
             {% else %}
-                <h2 class="unhealthy-text">Knee is unhealthy - Probability of disease: {{ prediction_1}}%.</h2>
+                <h2 class="unhealthy-text">Probability of disease: {{ prediction_1}}%.
+                </h2><h2 class="unhealthy-text">  Prediction: Knee is unhealthy. </h2>
             {% endif %}
         {% else %}
             {% if label_2 %}
-                <h2 class="healthy-text">Left knee is healthy - Probability of disease: {{ prediction_1}}%.</h2>
+                <h2 class="healthy-text">Probability of disease: {{ prediction_1}}%.
+                </h2><h2 class="healthy-text">  Prediction: Left knee is healthy. </h2>
             {% else %}
-                <h2 class="healthy-text">Knee is healthy - Probability of disease: {{ prediction_1}}%.</h2>
+                <h2 class="healthy-text">Probability of disease: {{ prediction_1}}%.
+                </h2><h2 class="healthy-text">  Prediction: Knee is healthy. </h2>
             {% endif %}
         {% endif %}
 
@@ -114,7 +117,7 @@
         {% endif %}
 
         {% if ShapValues_image_1 %}
-            <p class="image-description"><strong>ShapValues:</strong></p>
+            <p class="image-description"><strong>Deep SHAP:</strong></p>
             <img class="result-image" src="data:image/png;base64,{{ ShapValues_image_1 }}" alt="Processed Image 1c">
         {% endif %}
     </div>
@@ -122,9 +125,11 @@
     {% if label_2 %}
     <div class="result-card">
         {% if label_2 == 1 %}
-            <h2 class="unhealthy-text">Right knee is unhealthy - Probability of disease: {{ prediction_2}}%.</h2>
+            <h2 class="unhealthy-text">Probability of disease: {{ prediction_1}}%.
+            </h2><h2 class="unhealthy-text">  Prediction: Right knee is unhealthy. </h2>
         {% else %}
-            <h2 class="healthy-text">Knee is healthy - Probability of disease: {{ prediction_2}}%.</h2>
+            <h2 class="healthy-text">Probability of disease: {{ prediction_1}}%.
+            </h2><h2 class="healthy-text">  Prediction: Right knee is healthy. </h2>
         {% endif %}
 
         <p class="image-description"><strong>Image with highlighted important areas for the model:</strong></p>
@@ -140,7 +145,7 @@
         {% endif %}
 
         {% if ShapValues_image_2 %}
-            <p class="image-description"><strong>ShapValues:</strong></p>
+            <p class="image-description"><strong>Deep SHAP:</strong></p>
             <img class="result-image" src="data:image/png;base64,{{ ShapValues_image_2 }}" alt="Processed Image 2c">
         {% endif %}
     </div>
