@@ -62,12 +62,12 @@ class GradCam:
         with tf.GradientTape() as tape:
             conv_outputs, predictions = grad_model(x)
             loss = predictions[:, 0]
+            loss_mod = -tf.math.log(1/loss - 1 -1e-8)
 
-        grads = tape.gradient(loss, conv_outputs)[0]
-        # grads = tape.gradient(loss, conv_outputs)[0]
-        # grads = grads / (np.max(np.abs(grads)) + 1e-8)
-        # weights = np.mean(grads, axis=(0, 1))
-        cam = np.mean(conv_outputs[0], axis=-1)
+        grads = tape.gradient(loss_mod, conv_outputs)[0]
+        grads = (grads+1e-8) / (np.max(np.abs(grads)) + 1e-8)
+        weights = np.mean(grads, axis=(0, 1))
+        cam = np.mean(weights * conv_outputs[0], axis=-1)
         cam = np.maximum(cam, 0)
         cam = cv2.resize(cam, (224, 224))
         cam = cam / cam.max()
