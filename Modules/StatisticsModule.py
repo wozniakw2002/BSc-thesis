@@ -100,7 +100,7 @@ class Statistics:
 
         
     @staticmethod
-    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save: bool = False, path:str = 'plots/roc.png') -> None:
+    def plot_roc_curve(Y: np.array, Y_pred_prob: np.array, save: bool = False, path:str = 'plots/roc', path2:str = '') -> None:
         """
         Plots the Receiver Operating Characteristic (ROC) curve for a model.
 
@@ -132,13 +132,13 @@ class Statistics:
         plt.legend()
         plt.title('ROC curve')
         if save:
-            plt.savefig(path)
+            plt.savefig(path+path2+".png")
             return None
         else:
             plt.show()
 
     @staticmethod
-    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save: bool = False, path: str = 'plots/learn.png') -> None:
+    def plot_learning_curve(train_loss: np.array, val_loss: np.array, save: bool = False, path: str = 'plots/learn', path2:str = '') -> None:
         """
         Plots the learning curve, showing training and validation loss over epochs.
 
@@ -167,13 +167,13 @@ class Statistics:
         plt.xticks([i for i in range(1,len(train_loss) + 1, len(train_loss)//8)])
         plt.legend()
         if save:
-            plt.savefig(path)
+            plt.savefig(path+path2+".png")
             return None
         else:
             plt.show()
     
     @staticmethod
-    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save: bool = False, path: str = 'plots/conf.png') -> None:
+    def plot_confusion_matrix(Y: np.array, Y_pred: np.array, save: bool = False, path: str = 'plots/conf', path2:str = '') -> None:
         """
         Plots the normalized confusion matrix for the predicted and true labels.
 
@@ -195,18 +195,18 @@ class Statistics:
 
         conf_matrix = confusion_matrix(Y, Y_pred,normalize='all')
         fig, ax = plt.subplots(figsize=(5,5))
-        sns.heatmap(conf_matrix,cmap="YlOrBr", annot=True, fmt='.2f', xticklabels=['Normall', 'Osteoarthritis'], yticklabels=['Normall', 'Osteoarthritis'])
+        sns.heatmap(conf_matrix,cmap="YlOrBr", annot=True, fmt='.2f', xticklabels=['Normal', 'Osteoarthritis'], yticklabels=['Normal', 'Osteoarthritis'])
         plt.ylabel('Actual')
         plt.xlabel('Predicted')
         plt.title('Confusion matrix')
         if save:
-            plt.savefig(path)
+            plt.savefig(path+path2+".png")
             return None
         else:
             plt.show()
 
     @staticmethod
-    def plot_probability_histogram(Y_pred_prob: np.array, save: bool = False, path: str = 'plots/hist.png') -> None:
+    def plot_probability_histogram(Y_pred_prob: np.array, save: bool = False, path: str = 'plots/hist',path2:str = '') -> None:
         """
         Plots a histogram of predicted probabilities.
 
@@ -235,7 +235,7 @@ class Statistics:
         plt.xticks([i/10 for i in range(11)])
         plt.xticks()
         if save:
-            plt.savefig(path)
+            plt.savefig(path+path2+".png")
             return None
         else:
             plt.show()
@@ -265,10 +265,10 @@ class Statistics:
         --------
         None
         """
-        Statistics.plot_confusion_matrix(Y, Y_pred, True)
-        Statistics.plot_learning_curve(train_loss, val_loss, True)
-        Statistics.plot_probability_histogram(Y_pred_prob, True)
-        Statistics.plot_roc_curve(Y, Y_pred_prob, True)
+        Statistics.plot_confusion_matrix(Y, Y_pred, True, path2=name)
+        Statistics.plot_learning_curve(train_loss, val_loss, True, path2=name)
+        Statistics.plot_probability_histogram(Y_pred_prob, True, path2=name)
+        Statistics.plot_roc_curve(Y, Y_pred_prob, True, path2=name)
 
         metrics = [Statistics.accuracy(Y, Y_pred), 
              Statistics.f1_score(Y,Y_pred),
@@ -291,10 +291,10 @@ class Statistics:
         pdf.set_font('Helvetica', 'b', 11)
         pdf.write(5, 'Vizualizations')
 
-        pdf.image('plots/hist.png', 10,45, 100)
-        pdf.image('plots/roc.png', 110,45, 100)
-        pdf.image('plots/conf.png', 10,145, 100)
-        pdf.image('plots/learn.png', 110,145, 100)
+        pdf.image('plots/hist'+name+".png", 10,45, 100)
+        pdf.image('plots/roc'+name+".png", 110,45, 100)
+        pdf.image('plots/conf'+name+".png", 10,145, 100)
+        pdf.image('plots/learn'+name+".png", 110,145, 100)
         
 
         pdf.ln(210)
