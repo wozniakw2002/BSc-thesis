@@ -465,45 +465,37 @@ class Model:
             Contains the final training history and predictions dictionary.
         """
 
-        # Data preparation step: load, preprocess, and optionally save data
         X_train, X_test, X_val, Y_train, Y_test, Y_val = DataPreparation.training_data_preparation(
             full_augmentation, save_data, save_train_path, save_val_path, save_test_path,
             load_saved_data, train_path, val_path, test_path
         )
 
-        # Initial training and prediction
         history = Model.train_model(model, X_train, Y_train, X_val, Y_val, epochs, batch_size)
         predictions = Model.predict_training(model, X_train, X_val, X_test, threshold)
 
-        # Initialize averaging variables for repeated execution
+
         loss_mean = np.array(history.history['loss'])
         val_loss_mean = np.array(history.history['val_loss'])
         Y_test_prob = predictions['prediction_test'].flatten()
 
-        # Repeat training process for ensemble averaging if execution_count > 1
         for _ in range(1, execution_count):
-            # Clone and reinitialize the model for each execution
             model_test = tf.keras.models.clone_model(model)
             model_test.set_weights(model.get_weights())
             model_test.compile(optimizer='adam', loss='binary_crossentropy',
                             metrics=['accuracy', 'AUC', 'Precision', 'Recall'])
 
-            # Train and predict with the cloned model
             history = Model.train_model(model_test, X_train, Y_train, X_val, Y_val, epochs, batch_size)
             predictions = Model.predict_training(model_test, X_train, X_val, X_test, threshold)
 
-            # Accumulate results for averaging
             loss_mean += np.array(history.history['loss'])
             val_loss_mean += np.array(history.history['val_loss'])
             Y_test_prob += predictions['prediction_test'].flatten()
 
-        # Compute average results
         loss_mean = loss_mean / execution_count
         val_loss_mean = val_loss_mean / execution_count
         Y_test_pred_prob = Y_test_prob / execution_count
         Y_test_pred = (Y_test_pred_prob > threshold).astype("int32")
 
-        # Report statistics and performance metrics
         Statistics.report(Y_test, Y_test_pred, Y_test_pred_prob, loss_mean, val_loss_mean, name)
 
         # Optionally save history and predictions (commented out by default)
